@@ -80,17 +80,17 @@ first_samples <- df1 %>%
     
     # from this information, get the full_id for use in subsequent subsetting
     select(subj_id, collection_type, collection_date) %>% 
-    inner_join(df1, multiple = 'all') %>% 
+    inner_join(df1, multiple = "all") %>% 
     select(full_id) %>% 
     distinct()
 
 # create data frame with only samples which are the first collected for the
 # individual
-df2 <- inner_join(df1, first_samples)
+df2 <- inner_join(df1, first_samples, multiple = "all")
 
 # create data frame with only households with more than 1 person who tested
 # positive
-df3 <- inner_join(df2, household) %>% 
+df3 <- inner_join(df2, household, multiple = "all") %>% 
     select(-(c(alt_freq_1, alt_freq_2))) %>% 
     select(-(c(genome_segment, segment_position, ref_allele, alt_allele))) %>% 
     ungroup() 
@@ -151,7 +151,7 @@ df5 %>%
     ylab("Subject ID")
 
 # select for only the first sample for each subject id -------------------------
-df6 <- inner_join(first_samples, df4) %>% 
+df6 <- inner_join(first_samples, df4, multiple = "all") %>% 
     select(full_id, subj_id, year, household, collection_date, collection_type,
            index) %>% 
     distinct()
@@ -194,7 +194,7 @@ household_colors_3 <- rep(c("#4E79A7", "#A0CBE8"), 11)
 
 df7 %>% 
     full_join(householdNames_3) %>% 
-    inner_join(index) %>% 
+    inner_join(index, multiple = "all") %>% 
     mutate(year_lab = ifelse(year == 17, "2017-2018", "2018-2019")) %>% 
     ggplot(aes(x = collection_date, y = as.factor(subj_id))) +
     geom_tile(aes(fill = as.factor(new_name)), color = "black") +
@@ -220,7 +220,7 @@ pairMeta <- read.table("./input/pair_meta.txt", header = TRUE) %>%
 
 pairData <- pairMeta %>% 
     distinct() %>% 
-    mutate(pair_alpha = LETTERS[1:21]) %>%
+    mutate(pair_alpha = LETTERS[1:22]) %>%
     rename(pair_id = pair) %>% 
     mutate(year = ifelse(is.na(year), 18, year)) %>% 
     rename(pair = pair_id)
