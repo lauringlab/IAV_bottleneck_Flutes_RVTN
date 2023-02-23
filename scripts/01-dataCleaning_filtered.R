@@ -11,9 +11,9 @@
 library(tidyverse)
 library(lubridate)
 
-source("./scripts/00-samplingScheme_v2.R")
-all_sequences <- read_table("./input/allSequences.txt")
-rm(list=setdiff(ls(), c("all_sequences", "output_dataset")))
+source("./FluTES_bottleneck/scripts/00-samplingScheme_v2.R")
+source("./FluTES_bottleneck/scripts/00-consensusSequences.R")
+# rm(list=setdiff(ls(), c("all_sequences", "output_dataset")))
 
 raw_data <- read.csv("./input/IAV_meta_snv.csv")
 
@@ -24,14 +24,14 @@ df <- output_dataset %>%
     mutate(index2 = ifelse(index == 0, 2, 1))
 rm(output_dataset)
 
-df <- df %>% 
+df <- df %>%
     mutate(range_alt_freq1 = ifelse(alt_freq_1 > 0.005 & alt_freq_1 < 0.995,
                                     TRUE, FALSE),
            range_alt_freq2 = ifelse(alt_freq_2 > 0.005 & alt_freq_2 < 0.995,
                                     TRUE, FALSE),
            keep = ifelse(range_alt_freq1 == TRUE & range_alt_freq2 == TRUE,
-                         TRUE, FALSE)) %>% 
-    filter(keep == TRUE) %>% 
+                         TRUE, FALSE)) %>%
+    filter(keep == TRUE) %>%
     select(-c(range_alt_freq1, range_alt_freq2, keep))
 
 # Do more work to get the samples arranged by onset date                     ---
@@ -70,7 +70,7 @@ recipient_ids <- donor_recipient %>%
 # Pull out exact mutations for our donor and recipient ids                   ---
 donor_mutations <- donor_ids %>% 
     rename(full_id = donor) %>% 
-    inner_join(df) %>% 
+    inner_join(df, multiple = "all") %>% 
     select(pair_id, full_id, year, household, genome_segment, segment_position,
            ref_allele, alt_allele, avg_freq) %>% 
     rename(donor_ref_allele = ref_allele, 
@@ -80,7 +80,7 @@ donor_mutations <- donor_ids %>%
 
 recipient_mutations <- recipient_ids %>% 
     rename(full_id = recipient) %>% 
-    inner_join(df) %>% 
+    inner_join(df, multiple = "all") %>% 
     select(pair_id, full_id, year, household, genome_segment, segment_position,
            ref_allele, alt_allele, avg_freq) %>% 
     rename(recipient_ref_allele = ref_allele, 
@@ -91,12 +91,14 @@ recipient_mutations <- recipient_ids %>%
 ## Look up the consensus alleles are for each of these samples -----------------
 
 # Get our final list of ids                                                  ---
-final_ids <- df %>% 
-    select(full_id) %>% 
-    distinct()
+final_ids <- df %>%
+    select(full_id) %>%
+    distinct() %>% 
+    as_vector()
 
 # Get our sequence data into a usable format                                ---
-final_sequences_wide <- inner_join(final_ids, all_sequences)
+final_sequences_wide <- all_sequences %>% 
+    subset(full_id %in% final_ids)
 final_sequences_long <- final_sequences_wide %>% 
     gather(position, base, -c(full_id, genome_segment)) %>% 
     na.omit() %>% 
@@ -105,40 +107,38 @@ final_sequences_long <- final_sequences_wide %>%
 
 # Create data frame with donor-recipient pairs and mutations matched         ---
 df2 <- full_join(donor_mutations, recipient_mutations) %>% 
-    full_join(donor_recipient) %>% 
+    full_join(donor_recipient, multiple = "all") %>% 
     select(pair_id, donor, recipient, year, household, genome_segment,
            segment_position, donor_ref_allele, donor_alt_allele, donor_freq,
-           recipient_ref_allele, recipient_alt_allele, recipient_freq) %>% 
-    rename(donor_id = donor,
-           recipient_id = recipient)
+           recipient_ref_allele, recipient_alt_allele, recipient_freq)
 
 # Find the consensus allele for each sample at locations of interest         ---
 donor_consensus <- df2 %>% 
-    select(pair_id, donor_id, year, household, genome_segment, segment_position,
+    select(pair_id, donor, year, household, genome_segment, segment_position,
            donor_ref_allele) %>% 
-    rename(full_id = donor_id) %>% 
+    rename(full_id = donor) %>% 
     left_join(final_sequences_long) %>% 
     rename(donor_cons_allele = base,
-           donor_id = full_id)
+           donor = full_id)
 
 recipient_consensus <- df2 %>% 
-    select(pair_id, recipient_id, year, household, genome_segment,
+    select(pair_id, recipient, year, household, genome_segment,
            segment_position, recipient_ref_allele) %>% 
-    rename(full_id = recipient_id) %>% 
+    rename(full_id = recipient) %>% 
     left_join(final_sequences_long) %>% 
     rename(recipient_cons_allele = base,
-           recipient_id = full_id)
+           recipient = full_id)
 
 # Put it all together in a single data frame                                 ---
 df3 <- df2 %>% 
     full_join(recipient_consensus) %>% 
     full_join(donor_consensus) %>% 
-    select(pair_id, donor_id, recipient_id, year, household,
+    select(pair_id, donor, recipient, year, household,
            genome_segment, segment_position,
            donor_ref_allele, donor_cons_allele, 
            donor_alt_allele, donor_freq,
            recipient_ref_allele, recipient_cons_allele, 
-           recipient_alt_allele, recipient_freq)
+           recipient_alt_allele, recipient_freq) 
 
 # Alter frequency readings according to consensus and alternative alleles    ---
 ### Define the conditions for future filtering
@@ -212,12 +212,13 @@ for(i in pairs) {
     rm(df_pair)
 }
 
-pair_meta <- df6 %>% 
-    select(pair_id, year, household) %>% 
+pair_meta <- df5 %>%
+    filter(only_recipient != TRUE) %>%
+    select(pair_id, donor, recipient, year, household) %>%
     distinct()
 
 write.table(pair_meta,
-            file = "./input/pair_meta.txt",
+            file = "./input/pair_meta_filtered.txt",
             sep = "\t",
             row.names = FALSE, col.names = TRUE)
 
@@ -225,4 +226,3 @@ write.table(pairs,
             file = "./input/pairs.txt",
             sep = "\t",
             row.names = FALSE, col.names = FALSE)
-
