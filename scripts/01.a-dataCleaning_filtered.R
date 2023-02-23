@@ -9,7 +9,7 @@
 
 ## Path names - to be updated depending on local location of data --------------
 
-path_to_raw_data <- "./imput/IAV_meta_snv.csv"
+path_to_raw_data <- "./input/IAV_meta_snv.csv"
 
 path_to_sampleScheme <- "./FluTES_bottleneck/scripts/00-samplingScheme_onsetDate.R"
 path_to_consensusSequences <- "./FluTES_bottleneck/scripts/00-consensusSequences.R"

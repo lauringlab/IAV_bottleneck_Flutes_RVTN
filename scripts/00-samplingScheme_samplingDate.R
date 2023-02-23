@@ -8,7 +8,7 @@
 
 ## Path names - to be updated depending on local location of data --------------
 
-path_to_raw_data <- "./imput/IAV_meta_snv.csv"
+path_to_raw_data <- "./input/IAV_meta_snv.csv"
 
 ## Start of old dataCleaning.R script ------------------------------------------
 ## Load packages and raw data --------------------------------------------------

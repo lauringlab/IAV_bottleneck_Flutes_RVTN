@@ -8,7 +8,7 @@
 
 ## Path names - to be updated depending on local location of data --------------
 
-path_to_raw_data <- "./imput/IAV_meta_snv.csv"
+path_to_raw_data <- "./input/IAV_meta_snv.csv"
 path_to_pair_meta <- "./input/pair_meta/txt"
 path_to_varient_counts <- "./bottleneckOutput/all_zero.txt"
 path_to_confidence_int <- "./bottleneckOutput/confidence_int.txt"
