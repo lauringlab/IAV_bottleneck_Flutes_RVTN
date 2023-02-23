@@ -11,9 +11,12 @@
 path_to_raw_data <- "./imput/IAV_meta_snv.csv"
 path_to_pair_meta <- "./input/pair_meta.txt"
 
-## Start of old dataCleaning.R script ------------------------------------------
 ## Load packages and raw data --------------------------------------------------
 library(tidyverse)
+library(ggpattern)
+library(ggthemes)
+library(paletteer)
+
 raw_data <- read.csv(path_to_raw_data)
 
 ## Get data into form necessary for bottleneck calculation ---------------------
@@ -100,13 +103,6 @@ df3 <- inner_join(df2, household, multiple = "all") %>%
     select(-(c(genome_segment, segment_position, ref_allele, alt_allele))) %>% 
     ungroup() 
 
-## Start of old samplingPlots.R script ## --------------------------------------
-# Load packages ----------------------------------------------------------------
-library(tidyverse)
-library(ggpattern)
-library(ggthemes)
-library(paletteer)
-
 df4 <- df1 %>% 
     select(full_id, subj_id, year, household, collection_date, 
            collection_type, index) %>% 
@@ -142,7 +138,7 @@ df5 <- df4 %>%
 
 household_colors <- rep(c("#4E79A7", "#A0CBE8"), 31)
 
-df5 %>% 
+all_samples_plot <- df5 %>% 
     ggplot(aes(x = collection_date, y = as.factor(subj_id))) +
     geom_tile(aes(fill = as.factor(new_name)), color = "black") +
     geom_point(aes(col = index2)) +
@@ -168,7 +164,7 @@ householdNames_2 <- df6 %>%
     group_by(year) %>% 
     mutate(new_name = row_number())
 
-df6 %>% 
+first_samples_plot <- df6 %>% 
     full_join(householdNames_2) %>% 
     full_join(index, multiple = "all") %>% 
     mutate(year_lab = ifelse(year == 17, "2017-2018", "2018-2019")) %>% 
@@ -197,7 +193,7 @@ householdNames_3 <- df7 %>%
 
 household_colors_3 <- rep(c("#4E79A7", "#A0CBE8"), 11)
 
-df7 %>% 
+final_samples_plot <- df7 %>% 
     full_join(householdNames_3) %>% 
     inner_join(index, multiple = "all") %>% 
     mutate(year_lab = ifelse(year == 17, "2017-2018", "2018-2019")) %>% 
@@ -216,6 +212,7 @@ df7 %>%
 # create a list of the samples we want to use ----------------------------------
 
 final_ids <- df7 %>% 
+    ungroup() %>% 
     select(full_id)
 
 # look at the mutations within each samples ------------------------------------
@@ -254,7 +251,7 @@ household_names_4 <- df8 %>%
 df9 <- full_join(df8, household_names_4) %>% 
     full_join(genome_order)
 
-df9 %>% 
+all_SNPs_plot <- df9 %>% 
     ggplot(aes(x = mutation, y = as.factor(full_id))) +
     geom_tile(aes(fill = as.factor(new_name)), col = "black") +
     scale_fill_paletteer_d("ggthemes::Tableau_20", na.value = "white") +
