@@ -1,12 +1,19 @@
 ## Title: Processing of Consensus Sequence Data
 ## Author: Katy Krupinsky
-## Date Last Modified: 01/24/23
+## Date Last Modified: 02/23/23
 ## Description: This script processes the consensus sequence data for use in
 ## dependent scripts.
 ##
 ## -----------------------------------------------------------------------------
 
-HongKong <- read.csv("./consensusSequences/HongKong_all.consensus_positions")
+## Path names - to be updated depending on local location of data --------------
+
+path_to_HongKong <- "./consensusSequences/HongKong_all.consensus_positions"
+path_to_Michigan_2017 <- "./consensusSequences/Michigan_H1N1_2017_2018.all.consensus_positions"
+path_to_Michigan_2018 <- "./consensusSequences/Sigapore_H3N2_2018.all.consensus_positions"
+
+## Initial data importation and cleaning ---------------------------------------
+HongKong <- read.csv(path_to_HongKong)
 
 HongKong_clean <- HongKong %>% 
     rename(genome_segment = CHROM,
@@ -22,7 +29,7 @@ HongKong_ids <- HongKong_wide %>%
     distinct() %>% 
     mutate(strain = "HongKong")
 
-Michigan_2017 <- read.csv("./consensusSequences/Michigan_H1N1_2017_2018.all.consensus_positions")
+Michigan_2017 <- read.csv(path_to_Michigan_2017)
 
 Michigan_2017_clean <- Michigan_2017 %>% 
     rename(genome_segment = CHROM,
@@ -38,7 +45,7 @@ Michigan_2017_ids <- Michigan_2017_wide %>%
     distinct() %>% 
     mutate(strain = "Michigan2017")
 
-Michigan_2018 <- read.csv("./consensusSequences/Sigapore_H3N2_2018.all.consensus_positions")
+Michigan_2018 <- read.csv(path_to_Michigan_2018)
 
 Michigan_2018_clean <- Michigan_2018 %>% 
     rename(genome_segment = CHROM,

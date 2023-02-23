@@ -6,6 +6,13 @@
 ##
 ## -----------------------------------------------------------------------------
 
+## Path names - to be updated depending on local location of data --------------
+
+path_to_raw_data <- "./imput/IAV_meta_snv.csv"
+path_to_pair_meta <- "./input/pair_meta/txt"
+path_to_varient_counts <- "./bottleneckOutput/all_zero.txt"
+path_to_confidence_int <- "./bottleneckOutput/confidence_int.txt"
+
 ## Load packages and raw data --------------------------------------------------
 library(tidyverse)
 library(ggthemes)
@@ -14,9 +21,9 @@ library(ggnewscale)
 library(ggforce)
 library(ggpattern)
 
-pairMeta <- read.table("./input/pair_meta.txt", header = TRUE) %>% 
+pairMeta <- read.table(path_to_pair_meta, header = TRUE) %>% 
     rename(pair = pair_id)
-varientCounts <- read.table("./bottleneckOutput/all_zero.txt", header = TRUE) 
+varientCounts <- read.table(path_to_varient_counts, header = TRUE) 
 
 pairData <- full_join(pairMeta, varientCounts) %>% 
     distinct() %>% 
@@ -49,7 +56,7 @@ pairInformation <- pairData %>%
 
 ## Import output from bottleneckOutput.R script --------------------------------
 
-pairs <- read.table("./bottleneckOutput/all_zero.txt") %>% 
+pairs <- read.table(path_to_varient_counts) %>% 
     filter(V2 == FALSE) %>% 
     select(V1) %>% 
     mutate(V1 = as.character(V1)) %>% 
@@ -68,7 +75,7 @@ for (i in pairs){
     list[[i]] <- df
 }
 
-confidence <- read.table("./bottleneckOutput/confidence_int.txt") %>% 
+confidence <- read.table(path_to_confidence_int) %>% 
     purrr::set_names(as.character(slice(., 1))) %>%
     slice(-1) %>% 
     na.omit() %>% 
@@ -110,7 +117,8 @@ confidencePlot <- confidence %>%
            upper_CI = as.numeric(upper_CI),
            max_LL = as.numeric(max_LL)) %>% 
     ggplot() +
-    geom_bar(aes(x = as.factor(pair_alpha), y = max_LL, fill = as.factor(household)),
+    geom_bar(aes(x = as.factor(pair_alpha), y = max_LL,
+                 fill = as.factor(household)),
              stat = "identity") +
     scale_fill_paletteer_d("ggthemes::Tableau_20",
                            name = "Household\nNumber") +
@@ -120,7 +128,8 @@ confidencePlot <- confidence %>%
     scale_color_paletteer_d("ggsci::alternating_igv",
                             labels = c("2017-2018", "2018-2019"),
                             name = "Collection\nSeason") +
-    geom_errorbar(aes(x = as.factor(pair_alpha), ymin = lower_CI, ymax = upper_CI)) +
+    geom_errorbar(aes(x = as.factor(pair_alpha),
+                      ymin = lower_CI, ymax = upper_CI)) +
     geom_hline(yintercept = confidence_mean_total, lty = 2) +
     theme_hc(base_size = 14) +
     xlab("Transmission Pair") +
@@ -180,5 +189,3 @@ total_LL_plot <- total_LL %>%
                            upper_CI_bottleneck, sep = ""), ")", sep = ""), 
              size = 6, col = "#4E79A7", hjust = 0) +
     theme(plot.margin = margin(1,1,1.5,1.2, "cm"))
-
-total_LL_plot

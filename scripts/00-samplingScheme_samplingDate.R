@@ -6,10 +6,14 @@
 ##
 ## -----------------------------------------------------------------------------
 
+## Path names - to be updated depending on local location of data --------------
+
+path_to_raw_data <- "./imput/IAV_meta_snv.csv"
+
 ## Start of old dataCleaning.R script ------------------------------------------
 ## Load packages and raw data --------------------------------------------------
 library(tidyverse)
-raw_data <- read.csv("./input/IAV_meta_snv.csv")
+raw_data <- read.csv(path_to_raw_data)
 
 ## Get data into form necessary for bottleneck calculation ---------------------
 df1 <- raw_data %>% 
@@ -212,20 +216,6 @@ num_samples <- df4 %>%
 index <- df4 %>% 
     select(subj_id, index) %>% 
     mutate(index2 = ifelse(index == 1, "Index", NA))
-
-# household_person <- df4 %>%
-#     distinct() %>% 
-#     arrange(year, household, collection_type, collection_date) %>% 
-#     select(year, subj_id, household) %>% 
-#     distinct() %>% 
-#     ungroup() %>% 
-#     group_by(year, household) %>% 
-#     mutate(household_person = row_number())
-
-# date_ranges <- df4 %>%
-#     ungroup() %>%
-#     group_by(year) %>%
-#     summarize(range(collection_date))
 
 householdNames <- df4 %>% 
     select(year, household) %>% 

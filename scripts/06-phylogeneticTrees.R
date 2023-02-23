@@ -7,6 +7,15 @@
 ##
 ## -----------------------------------------------------------------------------
 
+## Path names - to be updated depending on local location of data --------------
+
+path_to_Mich_17_tree <- "./treefiles/Michigan_17_tree"
+path_to_Mich_18_tree <- "./treefiles/Michigan_18_tree"
+path_to_Singapore_tree <- "./treefiles/singapore_tree"
+path_to_pair_meta <- "./input/pair_meta/txt"
+
+path_to_samplingScheme <- "./scripts/00-samplingScheme_onsetDate.R"
+
 ## Load packages, raw data, and source script ----------------------------------
 
 library(tidyverse)
@@ -14,18 +23,18 @@ library(readtext)
 library(ape)
 library(ggtree)
 
-source("./scripts/00-samplingScheme_v2.R")
+source(path_to_samplingScheme)
 rm(list=setdiff(ls(), c("output_dataset")))
 
 final_id_strain <- output_dataset %>% 
     select(full_id, year, reference) %>% 
     distinct()
 
-Mich_17 <- read.tree("./treefiles/Michigan_17_tree")
-Mich_18 <- read.tree("./treefiles/Michigan_18_tree")
-Singapore <- read.tree("./treefiles/singapore_tree")
+Mich_17 <- read.tree(path_to_Mich_17_tree)
+Mich_18 <- read.tree(path_to_Mich_18_tree)
+Singapore <- read.tree(path_to_Singapore_tree)
 
-pairMeta <- read.table("./input/pair_meta.txt", header = TRUE) %>% 
+pairMeta <- read.table(path_to_pair_meta, header = TRUE) %>% 
     rename(pair = pair_id)
 
 colors <- c("#4E79A7", "#F28E2B", "#A0CBE8", "#A0CBE8", "#FFBE7D",

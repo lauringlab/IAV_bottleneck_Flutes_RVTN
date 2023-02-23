@@ -6,10 +6,15 @@
 ##
 ## -----------------------------------------------------------------------------
 
+## Path names - to be updated depending on local location of data --------------
+
+path_to_raw_data <- "./imput/IAV_meta_snv.csv"
+path_to_pair_meta <- "./input/pair_meta.txt"
+
 ## Start of old dataCleaning.R script ------------------------------------------
 ## Load packages and raw data --------------------------------------------------
 library(tidyverse)
-raw_data <- read.csv("./input/IAV_meta_snv.csv")
+raw_data <- read.csv(path_to_raw_data)
 
 ## Get data into form necessary for bottleneck calculation ---------------------
 df1 <- raw_data %>% 
@@ -215,7 +220,7 @@ final_ids <- df7 %>%
 
 # look at the mutations within each samples ------------------------------------
 
-pairMeta <- read.table("./input/pair_meta.txt", header = TRUE) %>% 
+pairMeta <- read.table(path_to_pair_meta, header = TRUE) %>% 
     rename(pair = pair_id)
 
 pairData <- pairMeta %>% 

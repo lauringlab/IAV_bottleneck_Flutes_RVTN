@@ -7,15 +7,22 @@
 ##
 ## -----------------------------------------------------------------------------
 
+## Path names - to be updated depending on local location of data --------------
+
+path_to_raw_data <- "./imput/IAV_meta_snv.csv"
+
+path_to_sampleScheme <- "./FluTES_bottleneck/scripts/00-samplingScheme_onsetDate.R"
+path_to_consensusSequences <- "./FluTES_bottleneck/scripts/00-consensusSequences.R"
+
 ## Load packages, raw data, and source script ----------------------------------
 library(tidyverse)
 library(lubridate)
 
-source("./FluTES_bottleneck/scripts/00-samplingScheme_v2.R")
-source("./FluTES_bottleneck/scripts/00-consensusSequences.R")
+source(path_to_sampleScheme)
+source(path_to_consensusSequences)
 # rm(list=setdiff(ls(), c("all_sequences", "output_dataset")))
 
-raw_data <- read.csv("./input/IAV_meta_snv.csv")
+raw_data <- read.csv(path_to_raw_data)
 
 ## Get data into form necessary for bottleneck calculation ---------------------
 ## -----------------------------------------------------------------------------

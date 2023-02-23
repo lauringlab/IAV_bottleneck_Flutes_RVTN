@@ -5,15 +5,24 @@
 ##
 ## -----------------------------------------------------------------------------
 
+## Path names - to be updated depending on local location of data --------------
+
+path_to_pair_meta <- "./input/pair_meta/txt"
+
+path_to_dataCleaning_filtered <- "./FluTES_bottleneck/scripts/01-dataCleaning_filtered.R"
+path_to_dataCleaning_unfiltered <- "./FluTES_bottleneck/scripts/01-dataCleaning_unfiltered.R"
+
+## Read in libraries and import data -------------------------------------------
+
 library(tidyverse)
 library(ggthemes)
 library(lemon)
 
-pair_meta <- read.table("./input/pair_meta.txt")
+pair_meta <- read.table(path_to_pair_meta)
 
 ### NOTE: Check to make sure the consensus file stuff didn't go to icloud!!! ###
 
-source("./FluTES_bottleneck/scripts/01-dataCleaning_filtered.R")
+source(path_to_dataCleaning_filtered)
 
 ## TV plot ---------------------------------------------------------------------
 
@@ -27,7 +36,7 @@ df_tv_nonZero <- df2 %>%
 # Create donor-recipient pairs without any filtering for minimum values      ---
 ## -----------------------------------------------------------------------------
 
-source("./FluTES_bottleneck/scripts/01-dataCleaning_unfiltered.R")
+source(path_to_dataCleaning_unfiltered)
 
 df_tv2 <- df4 %>% 
     mutate(donor_freq2 = ifelse(both == TRUE,
