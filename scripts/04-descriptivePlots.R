@@ -38,31 +38,22 @@ df_tv_nonZero <- df2 %>%
 
 source(path_to_dataCleaning_unfiltered)
 
-df_tv2 <- df4 %>% 
-    mutate(donor_freq2 = ifelse(both == TRUE,
-                                ifelse(same_cons == TRUE, donor_freq,
-                                       ifelse(dCons_rAlt == TRUE,
-                                              donor_freq, NA)),
-                                ifelse(only_donor == TRUE, donor_freq, 0)),
-           recipient_freq2 = ifelse(both == TRUE,
-                                    ifelse(same_cons == TRUE, recipient_freq,
-                                           ifelse(dCons_rAlt == TRUE,
-                                                  (1-recipient_freq), NA)),
-                                    ifelse(only_recipient == TRUE,
-                                           recipient_freq, 0))) %>% 
-    full_join(df5) %>% 
-    mutate(non_fixed = 1) %>% 
+df_tv2 <- df5 %>% 
     select(pair_id, donor, recipient, year, household, genome_segment,
            segment_position, donor_ref_allele, donor_alt_allele,
            donor_freq2, recipient_ref_allele, recipient_alt_allele,
-           recipient_freq2, non_fixed) %>% 
+           recipient_freq2) %>% 
     filter(!is.na(donor_freq2))
 
 ## TV plot with both arms ------------------------------------------------------
-df_tv <- full_join(df_tv2, df_tv_nonZero) %>% 
-    full_join(pair_meta, multiple = "all")
+df_tv <- anti_join(df_tv2, df_tv_nonZero) %>% 
+    bind_rows(df_tv_nonZero) %>% 
+    full_join(pair_meta, multiple = "all") %>% 
+    arrange(pair_id, donor, recipient, genome_segment, segment_position,
+            donor_freq2, recipient_freq2) %>% 
+    mutate(non_fixed = ifelse(is.na(non_fixed), 1, 0))
 
-rm(list=setdiff(ls(), c("df_tv", "pair_meta")))
+# rm(list=setdiff(ls(), c("df_tv", "pair_meta")))
 
 tv_plot <-  df_tv %>% 
     ggplot(aes(x = donor_freq2, y = recipient_freq2)) +
@@ -118,8 +109,8 @@ for (i in pairs) {
         ylim(c(0, 1.2)) +
         scale_x_continuous(expand = c(0.01,0.01)) +
         scale_y_continuous(expand = c(0, 0.05), breaks = seq(0, 1, by = 0.25)) +
-        xlab(pairs_info$donor[i]) +
-        ylab(pairs_info$recipient[i]) +
+        xlab("Donor") +
+        ylab("Recipient") +
         scale_color_manual(values = c("black"), na.value = "red") +
         scale_alpha_manual(values = c(0.5), na.value = 1) +
         theme(plot.margin = margin(1,1,1.5,1.2, "cm"),
