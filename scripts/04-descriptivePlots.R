@@ -7,10 +7,10 @@
 
 ## Path names - to be updated depending on local location of data --------------
 
-path_to_pair_meta <- "./input/pair_meta/txt"
+path_to_pair_meta <- "./input/pair_meta.txt"
 
-path_to_dataCleaning_filtered <- "./FluTES_bottleneck/scripts/01-dataCleaning_filtered.R"
-path_to_dataCleaning_unfiltered <- "./FluTES_bottleneck/scripts/01-dataCleaning_unfiltered.R"
+path_to_dataCleaning_filtered <- "/Users/katykrupinsky/git/FluTES_bottleneck/scripts/01.a-dataCleaning_filtered.R"
+path_to_dataCleaning_unfiltered <- "/Users/katykrupinsky/git/FluTES_bottleneck/scripts/01.b-dataCleaning_unfiltered.R"
 
 ## Read in libraries and import data -------------------------------------------
 
