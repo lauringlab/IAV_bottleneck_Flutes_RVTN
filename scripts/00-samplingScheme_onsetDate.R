@@ -59,9 +59,8 @@ df1 <- raw_data %>%
 
 # create list of households which have more than 1 person who tested positive
 household <- df1 %>% 
-    group_by(year, household, subj_id) %>% 
-    count() %>% 
-    ungroup() %>% 
+    select(year, household, subj_id) %>%
+    distinct() %>%
     group_by(year, household) %>% 
     count() %>% 
     filter(n > 1) %>% 
@@ -69,13 +68,10 @@ household <- df1 %>%
 
 # create list of samples which are the first collected for the individual
 first_samples <- df1 %>% 
-    ungroup() %>% 
     
-    # determine the number of mutation per subject by collection type and date
-    group_by(subj_id, collection_type, collection_date) %>% 
+    select(subj_id, collection_type, collection_date) %>% 
     arrange(subj_id, collection_type, collection_date) %>% 
-    count() %>% 
-    ungroup() %>% 
+    distinct() %>% 
     
     # create our own sample number variable which takes into account collection
     # type
@@ -99,27 +95,23 @@ df2 <- inner_join(df1, first_samples, multiple = "all")
 # create data frame with only households with more than 1 person who tested
 # positive
 df3 <- inner_join(df2, household, multiple = "all") %>% 
-    select(-(c(alt_freq_1, alt_freq_2))) %>% 
-    select(-(c(genome_segment, segment_position, ref_allele, alt_allele))) %>% 
+    select(-(c(alt_freq_1, alt_freq_2, genome_segment, segment_position,
+               ref_allele, alt_allele))) %>% 
     ungroup() 
 
+# create a data frame with only one row per subject ID of all samples
 df4 <- df1 %>% 
-    select(full_id, subj_id, year, household, collection_date, 
-           collection_type, index) %>% 
+    select(full_id, subj_id, year, household, collection_date, collection_type,
+           index) %>% 
     distinct()
-
-num_samples <- df4 %>%
-    select(subj_id, collection_date) %>% 
-    group_by(subj_id, collection_date) %>% 
-    count() %>% 
-    arrange(n) %>% 
-    mutate(num_sample = ifelse(n == 1, NA, "two"))
 
 index <- df4 %>% 
     select(subj_id, index) %>% 
     mutate(index2 = ifelse(index == 1, "Index", NA))
 
-householdNames <- df4 %>% 
+# Data visualizations of the sampling scheme -----------------------------------
+
+householdNames_1 <- df4 %>% 
     select(year, household) %>% 
     distinct() %>% 
     arrange(year, household) %>% 
@@ -127,29 +119,28 @@ householdNames <- df4 %>%
     mutate(new_name = row_number())
 
 df5 <- df4 %>% 
-    full_join(householdNames) %>% 
-    full_join(num_samples) %>% 
+    full_join(householdNames_1) %>% 
     full_join(index, multiple = "all") %>% 
     ungroup() %>% 
     select(subj_id, year, household, collection_date, collection_type,
-           index, index2, new_name, num_sample) %>% 
-    arrange(year, household, num_sample, subj_id, collection_date) %>% 
+           index, index2, new_name) %>% 
+    arrange(year, household, subj_id, collection_date) %>% 
     mutate(year_lab = ifelse(year == 17, "2017-2018", "2018-2019"))
 
-household_colors <- rep(c("#4E79A7", "#A0CBE8"), 31)
+# household_colors <- rep(c("#4E79A7", "#A0CBE8"), 31)
 
-all_samples_plot <- df5 %>% 
-    ggplot(aes(x = collection_date, y = as.factor(subj_id))) +
-    geom_tile(aes(fill = as.factor(new_name)), color = "black") +
-    geom_point(aes(col = index2)) +
-    facet_wrap(~year_lab, scales = "free") +
-    scale_fill_manual(values = household_colors) +
-    scale_color_manual(values = "black", na.value = NA, name = "Index",
-                       labels = c("", "")) +
-    theme_hc(base_size = 12) +
-    guides(fill = FALSE) +
-    xlab("Collection Date") +
-    ylab("Subject ID")
+# all_samples_plot <- df5 %>% 
+#     ggplot(aes(x = collection_date, y = as.factor(subj_id))) +
+#     geom_tile(aes(fill = as.factor(new_name)), color = "black") +
+#     geom_point(aes(col = index2)) +
+#     facet_wrap(~year_lab, scales = "free") +
+#     scale_fill_manual(values = household_colors) +
+#     scale_color_manual(values = "black", na.value = NA, name = "Index",
+#                        labels = c("", "")) +
+#     theme_hc(base_size = 12) +
+#     guides(fill = "none") +
+#     xlab("Collection Date") +
+#     ylab("Subject ID")
 
 # select for only the first sample for each subject id -------------------------
 df6 <- inner_join(first_samples, df4, multiple = "all") %>% 
@@ -164,21 +155,21 @@ householdNames_2 <- df6 %>%
     group_by(year) %>% 
     mutate(new_name = row_number())
 
-first_samples_plot <- df6 %>% 
-    full_join(householdNames_2) %>% 
-    full_join(index, multiple = "all") %>% 
-    mutate(year_lab = ifelse(year == 17, "2017-2018", "2018-2019")) %>% 
-    ggplot(aes(x = collection_date, y = as.factor(subj_id))) +
-    geom_tile(aes(fill = as.factor(new_name)), color = "black") +
-    geom_point(aes(col = index2)) +
-    facet_wrap(~year_lab, scales = "free") +
-    scale_fill_manual(values = household_colors) +
-    scale_color_manual(values = "black", na.value = NA, name = "Index",
-                       labels = c("", "")) +
-    theme_hc(base_size = 12) +
-    guides(fill = FALSE) +
-    xlab("Collection Date") +
-    ylab("Subject ID")
+# first_samples_plot <- df6 %>% 
+#     full_join(householdNames_2) %>% 
+#     full_join(index, multiple = "all") %>% 
+#     mutate(year_lab = ifelse(year == 17, "2017-2018", "2018-2019")) %>% 
+#     ggplot(aes(x = collection_date, y = as.factor(subj_id))) +
+#     geom_tile(aes(fill = as.factor(new_name)), color = "black") +
+#     geom_point(aes(col = index2)) +
+#     facet_wrap(~year_lab, scales = "free") +
+#     scale_fill_manual(values = household_colors) +
+#     scale_color_manual(values = "black", na.value = NA, name = "Index",
+#                        labels = c("", "")) +
+#     theme_hc(base_size = 12) +
+#     guides(fill = FALSE) +
+#     xlab("Collection Date") +
+#     ylab("Subject ID")
 
 # filter out households which only have one sample -----------------------------
 df7 <- inner_join(household, df6, multiple = "all") %>% 
@@ -191,32 +182,30 @@ householdNames_3 <- df7 %>%
     group_by(year) %>% 
     mutate(new_name = row_number())
 
-household_colors_3 <- rep(c("#4E79A7", "#A0CBE8"), 11)
-
-final_samples_plot <- df7 %>% 
-    full_join(householdNames_3) %>% 
-    inner_join(index, multiple = "all") %>% 
-    mutate(year_lab = ifelse(year == 17, "2017-2018", "2018-2019")) %>% 
-    ggplot(aes(x = collection_date, y = as.factor(subj_id))) +
-    geom_tile(aes(fill = as.factor(new_name)), color = "black") +
-    geom_point(aes(col = index2)) +
-    facet_wrap(~year_lab, scales = "free") +
-    scale_fill_manual(values = household_colors_3) +
-    scale_color_manual(values = "black", na.value = NA, name = "Index",
-                       labels = c("", "")) +
-    theme_hc(base_size = 12) +
-    guides(fill = "none") +
-    xlab("Collection Date") +
-    ylab("Subject ID")
+# household_colors_3 <- rep(c("#4E79A7", "#A0CBE8"), 11)
+# 
+# final_samples_plot <- df7 %>% 
+#     full_join(householdNames_3) %>% 
+#     inner_join(index, multiple = "all") %>% 
+#     mutate(year_lab = ifelse(year == 17, "2017-2018", "2018-2019")) %>% 
+#     ggplot(aes(x = collection_date, y = as.factor(subj_id))) +
+#     geom_tile(aes(fill = as.factor(new_name)), color = "black") +
+#     geom_point(aes(col = index2)) +
+#     facet_wrap(~year_lab, scales = "free") +
+#     scale_fill_manual(values = household_colors_3) +
+#     scale_color_manual(values = "black", na.value = NA, name = "Index",
+#                        labels = c("", "")) +
+#     theme_hc(base_size = 12) +
+#     guides(fill = "none") +
+#     xlab("Collection Date") +
+#     ylab("Subject ID")
 
 # create a list of the samples we want to use ----------------------------------
-
 final_ids <- df7 %>% 
     ungroup() %>% 
     select(full_id)
 
 # look at the mutations within each samples ------------------------------------
-
 pairMeta <- read.table(path_to_pair_meta, header = TRUE) %>% 
     rename(pair = pair_id)
 
@@ -226,7 +215,6 @@ pairData <- pairMeta %>%
     rename(pair_id = pair) %>% 
     mutate(year = ifelse(is.na(year), 18, year)) %>% 
     rename(pair = pair_id)
-
 rm(pairMeta)
 
 df8 <- final_ids %>% 
@@ -243,29 +231,29 @@ genome_order <- final_ids %>%
     arrange(genome_segment, segment_position) %>% 
     mutate(mutation = as.factor(mutation_lab))
 
-household_names_4 <- df8 %>% 
+householdNames_4 <- df8 %>% 
     select(household) %>% 
     distinct() %>% 
     mutate(new_name = row_number())
 
-df9 <- full_join(df8, household_names_4) %>% 
+df9 <- full_join(df8, householdNames_4) %>% 
     full_join(genome_order)
 
-all_SNPs_plot <- df9 %>% 
-    ggplot(aes(x = mutation, y = as.factor(full_id))) +
-    geom_tile(aes(fill = as.factor(new_name)), col = "black") +
-    scale_fill_paletteer_d("ggthemes::Tableau_20", na.value = "white") +
-    theme_hc() +
-    xlab("Mutation Position") +
-    ylab("Sample ID") +
-    guides(fill = FALSE) +
-    theme(axis.text.x = element_blank(),
-          axis.title.x = element_text(margin = margin(t = 20))) +
-    geom_rug(aes(x = mutation, color = genome_segment), outside = TRUE,
-             sides = "b") +
-    scale_color_paletteer_d("ggthemes::Superfishel_Stone",
-                            name = "Genome Segment") +
-    coord_cartesian(clip = "off")
+# all_SNPs_plot <- df9 %>% 
+#     ggplot(aes(x = mutation, y = as.factor(full_id))) +
+#     geom_tile(aes(fill = as.factor(new_name)), col = "black") +
+#     scale_fill_paletteer_d("ggthemes::Tableau_20", na.value = "white") +
+#     theme_hc() +
+#     xlab("Mutation Position") +
+#     ylab("Sample ID") +
+#     guides(fill = FALSE) +
+#     theme(axis.text.x = element_blank(),
+#           axis.title.x = element_text(margin = margin(t = 20))) +
+#     geom_rug(aes(x = mutation, color = genome_segment), outside = TRUE,
+#              sides = "b") +
+#     scale_color_paletteer_d("ggthemes::Superfishel_Stone",
+#                             name = "Genome Segment") +
+#     coord_cartesian(clip = "off")
 
 output_dataset <- df9
 
