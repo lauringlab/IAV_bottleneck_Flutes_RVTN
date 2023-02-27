@@ -14,7 +14,7 @@ path_to_Mich_18_tree <- "./treefiles/Michigan_18_tree"
 path_to_Singapore_tree <- "./treefiles/singapore_tree"
 path_to_pair_meta <- "./input/pair_meta/txt"
 
-path_to_samplingScheme <- "./scripts/00-samplingScheme_onsetDate.R"
+path_to_samplingScheme <- "/Users/katykrupinsky/git/FluTES_bottleneck/scripts/00-samplingScheme_onsetDate.R"
 
 ## Load packages, raw data, and source script ----------------------------------
 
@@ -24,7 +24,9 @@ library(ape)
 library(ggtree)
 
 source(path_to_samplingScheme)
-rm(list=setdiff(ls(), c("output_dataset")))
+rm(list=setdiff(ls(), c("output_dataset", "path_to_Mich_17_tree",
+                        "path_to_Mich_18_tree", "path_to_Singapore_tree",
+                        "path_to_pair_meta")))
 
 final_id_strain <- output_dataset %>% 
     select(full_id, year, reference) %>% 
@@ -41,16 +43,15 @@ colors <- c("#4E79A7", "#F28E2B", "#A0CBE8", "#A0CBE8", "#FFBE7D",
                      "#59A14F", "#8CD17D", "#B6992D", "#F1CE63", "#499894",
                      "#499894", "#86BCB6", "#E15759", "#FF9D9A", "#79706E",
                      "#BAB0AC", "#D37295", "#FABFD2", "#B07AA1", "#D4A6C8",
-                     "#9D7660")
+                     "#9D7660", "#D7B5A6")
 
 pairData <- pairMeta %>% 
     distinct() %>% 
-    mutate(pair_alpha = LETTERS[1:21]) %>%
+    mutate(pair_alpha = LETTERS[1:22]) %>%
     rename(pair_id = pair) %>% 
     mutate(year = ifelse(is.na(year), 18, year)) %>% 
     rename(pair = pair_id) %>% 
     bind_cols(colors = colors)
-
 rm(pairMeta)
 
 ## Pull out tips from the trees in preparation for later pruning ---------------
@@ -110,7 +111,7 @@ Mich_17_data <- output_dataset %>%
     mutate(tip.label = as.character(tip.label),
            subj_id = as.character(subj_id)) %>% 
     bind_rows(Michigan_reference_17) %>% 
-    inner_join(pairData) %>% 
+    left_join(pairData) %>% 
     mutate(colors = ifelse(is.na(colors), "black", colors))
 
 Mich_18_data <- output_dataset %>% 
@@ -121,7 +122,7 @@ Mich_18_data <- output_dataset %>%
     mutate(tip.label = as.character(tip.label),
            subj_id = as.character(subj_id)) %>% 
     bind_rows(Michigan_reference_18) %>% 
-    inner_join(pairData) %>% 
+    left_join(pairData) %>% 
     mutate(colors = ifelse(is.na(colors), "black", colors))
 
 Singapore_data <- output_dataset %>% 
@@ -133,7 +134,7 @@ Singapore_data <- output_dataset %>%
            subj_id = as.character(subj_id)) %>% 
     bind_rows(Singapore_reference_18) %>% 
     distinct() %>% 
-    inner_join(pairData) %>% 
+    left_join(pairData) %>% 
     mutate(colors = ifelse(is.na(colors), "black", colors))
 
 ## Generation of the trees -----------------------------------------------------
@@ -147,7 +148,7 @@ Mich_17_tree <- ggtree(Mich_17_pruned) %<+%
     scale_color_manual(values = c("#4E79A7", "#F28E2B"),
                             na.value = "black",
                             name = "Household\nNumber") +
-    ggtitle("Reference = 'Michigan' & Year = 2017") +
+    ggtitle("2017 Michigan") +
     theme(plot.title = element_text(hjust = 0.5, vjust = -2,
                                     size = 18, face = "bold"),
           legend.position = "none") +
@@ -164,15 +165,14 @@ Mich_18_tree <- ggtree(Mich_18_pruned) %<+%
     scale_color_manual(values = Mich_18_tree_colors,
                             na.value = "black",
                             name = "Household\nNumber") +
-    ggtitle("Reference = 'Michigan' & Year = 2018") +
+    ggtitle("2018 Michigan") +
     theme(plot.title = element_text(hjust = 0.5, vjust = -2,
                                     size = 18, face = "bold"),
           legend.position = "none") +
     hexpand(0.05)
 
-Singapore_tree_colors <- Singapore_data %>% 
-    select(colors) %>% 
-    as_vector()
+Singapore_tree_colors <- Singapore_data$colors %>% 
+    unique()
 
 Singapore_tree <- ggtree(Singapore_pruned) %<+%
     Singapore_data +
@@ -183,7 +183,7 @@ Singapore_tree <- ggtree(Singapore_pruned) %<+%
     scale_color_manual(values = Singapore_tree_colors,
                             na.value = "black",
                             name = "Household\nNumber") +
-    ggtitle("Reference = 'Singapore' & Year = 2018") +
+    ggtitle("2018 Singapore") +
     theme(plot.title = element_text(hjust = 0.5, vjust = -2,
                                     size = 16, face = "bold"),
           legend.position = "none") +
