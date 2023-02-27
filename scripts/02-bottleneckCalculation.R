@@ -1,5 +1,5 @@
 ## Title: Bottleneck Calculations
-## Date Last Modified: 01/25/23
+## Date Last Modified: 02/27/23
 ## Description: This code was pulled from the github page for the Koelle lab 
 ## bottleneck calculation paper (https://github.com/koellelab/betabinomial_bottleneck).
 ## Additions were made to put the calculation into a loop and output the
@@ -29,7 +29,7 @@ for (a in pairs){
                       paste(paste("output_pair", a, sep = "_"), ".txt",
                             sep = ""), sep = "")
     
-    # 1. Handle command line arguments ---------------------------------------------
+    ## 1. Handle command line arguments ----------------------------------------
     parser <- ArgumentParser()
     
     parser$add_argument("--file", type="character", default = pathname ,
@@ -48,33 +48,50 @@ for (a in pairs){
                         help="Confidence level (determines bounds of confidence interval)")
     args <- parser$parse_args()
     
-    # 2. Create necessary variables and data frames --------------------------------
+    ## 2. Create necessary variables and data frames ---------------------------
     
-    plot_bool  <- args$plot_bool    # determines whether or not a plot of log likelihood vs bottleneck size is produced
+    # determines whether a plot of log likelihood vs bottleneck size is produced
+    plot_bool  <- args$plot_bool
     
-    var_calling_threshold  <- args$var_calling_threshold    # variant calling threshold for frequency in recipient
+    # variant calling threshold for frequency in recipient
+    var_calling_threshold  <- args$var_calling_threshold
     
-    Nb_min <- args$Nb_min   # minimum bottleneck size we consider
+    # minimum bottleneck size we consider
+    Nb_min <- args$Nb_min  
     if(Nb_min < 1){
         Nb_min = 1
     }     # preventing errors with Nb_min at 0 or lower 
     
-    Nb_max <-  args$Nb_max     # maximum bottleneck size we consider
+    # maximum bottleneck size we consider
+    Nb_max <-  args$Nb_max
+    
     Nb_increment <- args$Nb_increment
-    confidence_level <- args$confidence_level   # determines width of confidence interval
     
-    donor_and_recip_freqs_observed <- read.table(args$file)     # table of SNP frequencies in donor and recipient
-    original_row_count <- nrow(donor_and_recip_freqs_observed)  # number of rows in raw table
-    donor_and_recip_freqs_observed <- subset(donor_and_recip_freqs_observed,
-                                             donor_and_recip_freqs_observed[, 1] >= var_calling_threshold)
+    # determines width of confidence interval
+    confidence_level <- args$confidence_level
     
-    donor_and_recip_freqs_observed[, 1] <- as.numeric(donor_and_recip_freqs_observed[, 1])
-    donor_and_recip_freqs_observed[, 2] <- as.numeric(donor_and_recip_freqs_observed[, 2])
+    # table of SNP frequencies in donor and recipient
+    donor_and_recip_freqs_observed <- read.table(args$file)
     
-    donor_and_recip_freqs_observed <- subset(donor_and_recip_freqs_observed,
-                                             donor_and_recip_freqs_observed[, 1] <= (1-var_calling_threshold))
+    # number of rows in raw table
+    original_row_count <- nrow(donor_and_recip_freqs_observed)
     
-    new_row_count <- nrow(donor_and_recip_freqs_observed) # number of rows in filtered table
+    donor_and_recip_freqs_observed <- 
+        subset(donor_and_recip_freqs_observed,
+               donor_and_recip_freqs_observed[, 1] >= var_calling_threshold)
+    
+    donor_and_recip_freqs_observed[, 1] <- 
+        as.numeric(donor_and_recip_freqs_observed[, 1])
+    
+    donor_and_recip_freqs_observed[, 2] <- 
+        as.numeric(donor_and_recip_freqs_observed[, 2])
+    
+    donor_and_recip_freqs_observed <- 
+        subset(donor_and_recip_freqs_observed,
+               donor_and_recip_freqs_observed[, 1] <= (1-var_calling_threshold))
+    
+    # number of rows in filtered table
+    new_row_count <- nrow(donor_and_recip_freqs_observed)
     
     if(new_row_count != original_row_count){
         print("WARNING:  Rows of the input file with donor frequency less than variant calling threshold have been removed during analysis. ")
@@ -84,7 +101,8 @@ for (a in pairs){
         print("!!!WARNING!!!: Observed frequency table does not fall within varient calling threshold. All output will be zeros")
     }
     
-    n_variants <- nrow(donor_and_recip_freqs_observed) # number of variants 
+    # number of variants 
+    n_variants <- nrow(donor_and_recip_freqs_observed)
     
     freqs_tibble <- tibble(donor_freqs = donor_and_recip_freqs_observed[, 1],
                            recip_freqs = donor_and_recip_freqs_observed[, 2] )
@@ -103,11 +121,15 @@ for (a in pairs){
     
         ## Get Log-Likelihood for every donor recipient SNP frequency pair
         Log_Beta_Binom <- function(nu_donor, nu_recipient, NB_SIZE) {
-            LL_val_above <- 0 # used for recipient frequencies above calling threshold
-            LL_val_below <- 0 # used for recipient frequencies below calling threshold
+            # used for recipient frequencies above calling threshold
+            LL_val_above <- 0
+            
+            # used for recipient frequencies below calling threshold
+            LL_val_below <- 0
         
             nu_donor <- if_else(nu_recipient <= 1 - var_calling_threshold,
                                 nu_donor,  1-nu_donor)
+            
             nu_recipient <- if_else(nu_recipient <= 1 - var_calling_threshold,
                                     nu_recipient,  1-nu_recipient)
             for(k in 0:NB_SIZE){
@@ -121,12 +143,16 @@ for (a in pairs){
             LL_val <- if_else(nu_recipient >= var_calling_threshold,
                               LL_val_above, LL_val_below)
         
-        # We use LL_val_above above the calling threshold, and LL_val_below below the calling threshold
-            LL_val <- log(LL_val) # convert likelihood to log likelihood
+        # We use LL_val_above above the calling threshold, and LL_val_below
+        # below the calling threshold
+            
+            # convert likelihood to log likelihood
+            LL_val <- log(LL_val)
             return(LL_val)
         }
         
-        LL_func_approx <- function(Nb_size){  # This function sums over all SNP frequencies in the donor and recipient
+        # This function sums over all SNP frequencies in the donor and recipient
+        LL_func_approx <- function(Nb_size){
             Total_LL <- 0
             LL_array <- Log_Beta_Binom(freqs_tibble$donor_freqs,
                                        freqs_tibble$recip_freqs, Nb_size)  
@@ -145,20 +171,32 @@ for (a in pairs){
                             Log_Likelihood = 0 * bottleneck_values_vector) 
         
         for(c in 1:nrow(LL_tibble) ){
-            LL_tibble$Log_Likelihood[c] <- LL_func_approx(LL_tibble$bottleneck_size[c])
+            LL_tibble$Log_Likelihood[c] <-
+                LL_func_approx(LL_tibble$bottleneck_size[c])
         }
         
     # 4. Find the MLE and the associated confidence interval -------------------
         
-        Max_LL <- max(LL_tibble$Log_Likelihood) # Maximum value of log likelihood
+        # Maximum value of log likelihood
+        Max_LL <- max(LL_tibble$Log_Likelihood)
+        
+        # bottleneck size at which max likelihood occurs
         Max_LL_bottleneck_index <- 
-            which(LL_tibble$Log_Likelihood == max(LL_tibble$Log_Likelihood)) # bottleneck size at which max likelihood occurs
-        Max_LL_bottleneck <- bottleneck_values_vector[Max_LL_bottleneck_index] 
-        likelihood_ratio <- qchisq(confidence_level, df = 1) # necessary ratio of likelihoods set by confidence level
+            which(LL_tibble$Log_Likelihood == max(LL_tibble$Log_Likelihood))
+        
+        Max_LL_bottleneck <- bottleneck_values_vector[Max_LL_bottleneck_index]
+        
+        # necessary ratio of likelihoods set by confidence level
+        likelihood_ratio <- qchisq(confidence_level, df = 1)
+        
         ci_tibble <- filter(LL_tibble,
                             2 * (Max_LL - Log_Likelihood) <= likelihood_ratio) 
-        lower_CI_bottleneck <- min(ci_tibble$bottleneck_size) #-1 # lower bound of confidence interval
-        upper_CI_bottleneck <- max(ci_tibble$bottleneck_size) #+1# upper bound of confidence interval
+        
+        #-1 # lower bound of confidence interval
+        lower_CI_bottleneck <- min(ci_tibble$bottleneck_size)
+        
+        #+1# upper bound of confidence interval
+        upper_CI_bottleneck <- max(ci_tibble$bottleneck_size)
         
         #if ci_tibble is empty
         if (length(ci_tibble$Log_Likelihood) == 0) {
@@ -178,7 +216,7 @@ for (a in pairs){
         confidence[a, 3] <- upper_CI_bottleneck
         confidence[a, 4] <- lower_CI_bottleneck
         
-    # 5. Write output to table at previously defined filename ------------------
+    ## 5. Write output to table at previously defined file name -----------------
         write.table(LL_tibble,
                     file = filename,
                     sep = "\t",
@@ -186,7 +224,7 @@ for (a in pairs){
     }
 }
 
-# 6. Write housekeeping output to permanent files ------------------------------
+## 6. Write housekeeping output to permanent files -----------------------------
 write.table(all_zero, 
             file = "./bottleneckOutput/all_zero.txt",
             sep = "\t",
@@ -196,5 +234,5 @@ write.table(confidence,
             sep = "\t",
             row.names = FALSE)
 
-# 7. Clean up environment ------------------------------------------------------
+## 7. Clean up environment -----------------------------------------------------
 rm(list=setdiff(ls(), c()))
