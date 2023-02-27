@@ -11,8 +11,8 @@
 
 path_to_raw_data <- "./input/IAV_meta_snv.csv"
 
-path_to_sampleScheme <- "./FluTES_bottleneck/scripts/00-samplingScheme_onsetDate.R"
-path_to_consensusSequences <- "./FluTES_bottleneck/scripts/00-consensusSequences.R"
+path_to_sampleScheme <- "/Users/katykrupinsky/git/FluTES_bottleneck/scripts/00-samplingScheme_onsetDate.R"
+path_to_consensusSequences <- "/Users/katykrupinsky/git/FluTES_bottleneck/scripts/00-consensusSequences.R"
 
 ## Load packages, raw data, and source script ----------------------------------
 library(tidyverse)
