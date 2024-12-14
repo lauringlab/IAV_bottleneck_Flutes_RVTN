@@ -11,7 +11,7 @@ determineTransmissionPairs2 <- function(df) {
     house <- household[n]
     pair <- df %>%
       filter(hhid == house) %>%
-      select(sample, site, season, age, sex, vax, onset_date, strain) %>%
+      select(sample, site, season, age, sex, vax, onset_date, collection_date, strain) %>%
       distinct() %>%
       arrange(onset_date)
     
@@ -107,7 +107,10 @@ determineTransmissionPairs2 <- function(df) {
       recipient_age = pair$age[recipient_index],
       donor_sex = pair$sex[donor_index],
       recipient_sex = pair$sex[recipient_index],
-      donor_onset = pair$onset_date[donor_index]
+      donor_onset = pair$onset_date[donor_index],
+      recipient_onset = pair$onset_date[recipient_index],
+      donor_collection = pair$collection_date[donor_index],
+      recipient_collection = pair$collection_date[recipient_index]
     )
     
     list[[n]] <- out

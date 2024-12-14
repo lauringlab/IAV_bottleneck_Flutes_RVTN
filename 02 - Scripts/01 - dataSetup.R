@@ -29,6 +29,14 @@ df <- bind_rows(rvtn_unified, flutes_unified)
 rm(flutes_unified)
 rm(rvtn_unified)
 
+write.table(
+  df,
+  file = "./03 - Input/all_sequenced_samples.txt",
+  sep = "\t",
+  row.names = FALSE,
+  col.names = TRUE
+)
+
 # 2. Clean data ----------------------------------------------------------------
 df <- cleanUnifiedDataset(df, filter = TRUE, nSnvFilterThresh = 50)
 
@@ -66,7 +74,10 @@ pair_meta_out <- final_pairs %>%
     recipient_age,
     donor_sex,
     recipient_sex,
-    donor_onset
+    donor_onset,
+    recipient_onset,
+    donor_collection,
+    recipient_collection
   ) %>%
   arrange(pair_id)
 

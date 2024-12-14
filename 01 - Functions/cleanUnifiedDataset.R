@@ -6,7 +6,6 @@ cleanUnifiedDataset <- function(df,
     mutate(onset_date = if_else(is.na(onset_date), collection_date, onset_date))
   
   # 2. Filter for indeterminate vaccination status -----------------------------
-  
   out <- out %>% 
     filter(vax == 0 | vax == 1)
   
