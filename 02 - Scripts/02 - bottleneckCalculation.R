@@ -1,17 +1,19 @@
-## Title: Bottleneck Calculations
-## Date Last Modified: 02/22/24
-## Description: This code was pulled from the github page for the Koelle lab
-## bottleneck calculation paper (https://github.com/koellelab/betabinomial_bottleneck).
-## Additions were made to put the calculation into a loop and output the
-## data frame as separate files.
-##
-## -----------------------------------------------------------------------------
-
-# 0. Load necessary libraries and set up data frames ---------------------------
 library(tidyverse)
 library(argparse)
 
-files <- list.files("03 - Input/processedData") %>%
+# 0. Setup ---------------------------------------------------------------------
+### Bring in functions ###
+file.sources = list.files(
+  c("./01 - Functions/bottleneckCalculation_111124"),
+  pattern = "*.R$",
+  full.names = TRUE,
+  ignore.case = TRUE
+)
+sapply(file.sources, source, .GlobalEnv)
+rm(file.sources)
+
+### Setup importing of pairs iSNVs ###
+files <- list.files("./03 - Input/processedData") %>%
   data.frame() %>%
   mutate(
     pair = str_replace(., "pair_", ""),
@@ -21,222 +23,157 @@ files <- list.files("03 - Input/processedData") %>%
   summarize(max(pair)) %>%
   as.numeric()
 
+### Necessary data frames for analysis ###
 pairs <- seq(1, files)
-all_zero <- data.frame(pair = 1:length(pairs),
-                       bool = NA,
+num_vars <- data.frame(pair = 1:length(pairs),
+                       # bool = NA,
                        n_variants = 0)
 confidence <- data.frame(
   pair = 1:length(pairs),
   max_LL = 000,
+  lower_CI = 000,
   upper_CI = 000,
-  lower_CI = 000
+  corrected = 99
 )
+warnings <- tibble()
+ll_out <- list()
 
-for (a in pairs) {
-  pathname <- paste("03 - Input/processedData/",
-                    paste(paste("pair", a, sep = "_"), ".txt", sep = ""),
+### Begin loop ###
+for (p in 1:max(pairs)) {
+  filename <- paste("./03 - Input/processedData/",
+                    paste(paste("pair", p, sep = "_"), ".txt", sep = ""),
                     sep = "")
-  filename <- paste("04 - Output/", paste(paste("output_pair", a, sep = "_"), ".txt", sep = ""), sep = "")
   
-  # 1. Handle command line arguments ---------------------------------------------
-  parser <- ArgumentParser()
+  # Handle command line arguments ------------------------------------------------
+  args <- handleCommandLineArgs (
+    filename = filename,
+    plot_bool = FALSE,
+    var_thresh = 0.005,
+    nb_min = 1,
+    nb_max = 200,
+    nb_increment = 1,
+    conf_level = 0.95
+  )
   
-  parser$add_argument("--file",
-                      type = "character",
-                      default = pathname ,
-                      help = "file containing variant frequencies")
-  parser$add_argument("--plot_bool",
-                      type = "logical",
-                      default = FALSE,
-                      help = "determines whether pdf plot approx_plot.pdf is produced or not")
-  parser$add_argument(
-    "--var_calling_threshold",
-    type = "double",
-    default = 0.02,
-    help = "variant calling threshold"
-  )
-  parser$add_argument("--Nb_min",
-                      type = "integer",
-                      default = 1,
-                      help = "Minimum bottleneck value considered")
-  parser$add_argument("--Nb_max",
-                      type = "integer",
-                      default = 200,
-                      help = "Maximum bottleneck value considered")
-  parser$add_argument(
-    "--Nb_increment",
-    type = "integer",
-    default = 1,
-    help = "increment between Nb values considered, i.e., all values considered will be multiples of Nb_increment that fall between Nb_min and Nb_max"
-  )
-  parser$add_argument(
-    "--confidence_level",
-    type = "double",
-    default = .95,
-    help = "Confidence level (determines bounds of confidence interval)"
-  )
-  args <- parser$parse_args()
-  
-  # 2. Create necessary variables and data frames --------------------------------
-  plot_bool  <- args$plot_bool
+  # Create necessary variables and data frames -----------------------------------
   var_calling_threshold  <- args$var_calling_threshold
   Nb_min <- args$Nb_min
+  if (Nb_min < 1) {
+    Nb_min = 1
+  }
   Nb_max <-  args$Nb_max
   Nb_increment <- args$Nb_increment
   confidence_level <- args$confidence_level
-  donor_and_recip_freqs_observed <- read.table(args$file)
+  freqs_tibble <- read_table(
+    args$file,
+    col_names = c("donor_freqs", "recip_freqs"),
+    col_types = c(col_number(), col_number())
+  )
   
-  # number of rows in raw table
-  original_row_count <- nrow(donor_and_recip_freqs_observed)
+  # Filter out iSNVs that are not truly in the donor -----------------------------
+  original_row_count <- nrow(freqs_tibble)
+  freqs_tibble <- freqs_tibble %>%
+    subset(donor_freqs >= var_calling_threshold) %>%
+    subset(donor_freqs <= (1 - var_calling_threshold))
+  new_row_count <- nrow(freqs_tibble)
+  n_variants <- new_row_count
+  warnings <- warningMessage(
+    opt = 1,
+    suppressMessage = TRUE,
+    original_row_count = original_row_count,
+    new_row_count = new_row_count,
+    warnings = warnings
+  )
   
-  donor_and_recip_freqs_observed <- donor_and_recip_freqs_observed %>%
-    dplyr::rename(donor_freq = V1, recip_freq = V2) %>%
-    subset(donor_freq >= var_calling_threshold &
-             donor_freq <= (1 - var_calling_threshold))
+  ### Save number of variants going into calculation ###
+  num_vars[p, 2] <- n_variants
   
-  # number of rows in filtered table
-  new_row_count <- nrow(donor_and_recip_freqs_observed)
-  
-  if (new_row_count != original_row_count) {
-    print(
-      "WARNING:  Rows of the input file with donor frequency less than variant calling threshold have been removed during analysis. "
-    )
+  # Implement the beta binomial algorithm ----------------------------------------
+  bottleneck_values_vector <- c()
+  for (i in Nb_min:Nb_max) {
+    if (i %% Nb_increment == 0) {
+      bottleneck_values_vector <- c(bottleneck_values_vector, i)
+    }
   }
   
-  if (new_row_count == 0) {
-    print(
-      "!!!WARNING!!!: Observed frequency table does not fall within varient calling threshold. All output will be zeros"
-    )
+  LL_tibble <- tibble(
+    bottleneck_size = bottleneck_values_vector,
+    Log_Likelihood = 0 * bottleneck_values_vector
+  )
+  
+  for (I in 1:nrow(LL_tibble)) {
+    LL_tibble$Log_Likelihood[I] <- LL_func_approx(Nb_size = LL_tibble$bottleneck_size[I])
   }
   
-  # number of variants
-  n_variants <- nrow(donor_and_recip_freqs_observed)
-  freqs_tibble <- as_tibble(donor_and_recip_freqs_observed)
+  # Find maximum likelihood estimate and associated confidence interval --------
+  Max_LL <- max(LL_tibble$Log_Likelihood)
+  Max_LL_bottleneck_index <- which(LL_tibble$Log_Likelihood == max(LL_tibble$Log_Likelihood))
+  Max_LL_bottleneck <- bottleneck_values_vector[Max_LL_bottleneck_index]
+  likelihood_ratio <- qchisq(confidence_level, df = 1)
   
-  # 3. Implement the beta binomial algorithm ---------------------------------
+  ci_tibble <- filter(LL_tibble, 2 * (Max_LL - Log_Likelihood) <= likelihood_ratio)
+  ci_tibble <- LL_tibble %>%
+    filter(2 * (Max_LL - Log_Likelihood) < likelihood_ratio)
+  lower_CI_bottleneck <- min(ci_tibble$bottleneck_size)
+  upper_CI_bottleneck <- max(ci_tibble$bottleneck_size)
   
-  if (new_row_count == 0) {
-    all_zero[a, 2] <- TRUE
-    all_zero[a, 3] <- n_variants
-    confidence[a, 2] <- NA
-    confidence[a, 3] <- NA
-    confidence[a, 4] <- NA
+  ### Adjust for fringe cases of interest ###
+  corrected <- 0
+  
+  if (length(ci_tibble$Log_Likelihood) == 0) {
+    lower_CI_bottleneck <- min(Max_LL_bottleneck)
+    upper_CI_bottleneck <- max(Max_LL_bottleneck)
+    corrected <- 1
+  }
+  if (max(Max_LL_bottleneck) == max(bottleneck_values_vector)) {
+    upper_CI_bottleneck <- max(bottleneck_values_vector)
+    corrected <- 2
+  } else if (min(Max_LL_bottleneck) == min(bottleneck_values_vector)) {
+    lower_CI_bottleneck <- min(bottleneck_values_vector)
+    corrected <- 3
+  }
+  warnings <- warningMessage(
+    opt = 2,
+    suppressMessage = TRUE,
+    Max_LL_bottleneck = Max_LL_bottleneck,
+    bottleneck_values_vector = bottleneck_values_vector,
+    warnings = warnings
+  )
+  
+  ### Save this MLE and confidence interval information ###
+  ll_out[[p]] <- LL_tibble %>% 
+    mutate(pair = p)
+  
+  if (n_variants != 0) {
+    confidence[p, 2] <- Max_LL_bottleneck
+    confidence[p, 3] <- lower_CI_bottleneck
+    confidence[p, 4] <- upper_CI_bottleneck
+    confidence[p, 5] <- corrected
   } else {
-    all_zero[a, 2] <- FALSE
-    all_zero[a, 3] <- n_variants
-
-# Function definition: Get Log-Likelihood for every donor recipient SNP frequency pair
-    LL_func_approx <- function(Nb_size, freqs_tibble, Total_LL = 0) {
-      
-      # Function definition
-      Log_Beta_Binom <- function(nu_donor = freqs_tibble$donor_freqs,
-                                 nu_recipient = freqs_tibble$recip_freqs,
-                                 NB_SIZE = Nb_size,
-                                 LL_value_above = 0,
-                                 LL_val_below = 0) {
-        
-        nu_donor <- if_else(nu_recipient <= 1 - var_calling_threshold,
-                            nu_donor,
-                            1 - nu_donor)
-        nu_recipient <- if_else(nu_recipient <= 1 - var_calling_threshold,
-                                nu_recipient,
-                                1 - nu_recipient)
-        for (k in 0:NB_SIZE) {
-          LL_val_above <-  LL_val_above +
-            dbeta(nu_recipient, k, (NB_SIZE - k)) *
-            dbinom(k, size = NB_SIZE, prob = nu_donor)
-          LL_val_below <- LL_val_below +
-            pbeta(var_calling_threshold, k, (NB_SIZE - k)) *
-            dbinom(k, size = NB_SIZE, prob = nu_donor)
-        }
-        LL_val <- if_else(nu_recipient >= var_calling_threshold,
-                          LL_val_above,
-                          LL_val_below)
-        
-        # We use LL_val_above above the calling threshold, and LL_val_below below the calling threshold
-        
-        # convert likelihood to log likelihood
-        LL_val <- log(LL_val)
-        return(LL_val)
-      }
-      
-      # Create output array
-      LL_array <- Log_Beta_Binom(freqs_tibble$donor_freqs,
-                                 freqs_tibble$recip_freqs,
-                                 Nb_size)
-      Total_LL <- sum(LL_array)
-      return(Total_LL)
-    }
-    
-    bottleneck_values_vector <- c()
-    for (b in Nb_min:Nb_max) {
-      if (b %% Nb_increment == 0) {
-        bottleneck_values_vector <- c(bottleneck_values_vector, b)
-      }
-    }
-    
-    LL_tibble <- tibble(
-      bottleneck_size = bottleneck_values_vector,
-      Log_Likelihood = 0 * bottleneck_values_vector
-    )
-    
-    for (c in 1:nrow(LL_tibble)) {
-      LL_tibble$Log_Likelihood[c] <- LL_func_approx(LL_tibble$bottleneck_size[c])
-    }
-    
-    # 4. Find the MLE and the associated confidence interval -------------------
-    
-    Max_LL <- max(LL_tibble$Log_Likelihood) # Maximum value of log likelihood
-    Max_LL_bottleneck_index <-
-      which(LL_tibble$Log_Likelihood == max(LL_tibble$Log_Likelihood)) # bottleneck size at which max likelihood occurs
-    Max_LL_bottleneck <- bottleneck_values_vector[Max_LL_bottleneck_index]
-    likelihood_ratio <- qchisq(confidence_level, df = 1) # necessary ratio of likelihoods set by confidence level
-    ci_tibble <- filter(LL_tibble, 2 * (Max_LL - Log_Likelihood) <= likelihood_ratio)
-    lower_CI_bottleneck <- min(ci_tibble$bottleneck_size) #-1 # lower bound of confidence interval
-    upper_CI_bottleneck <- max(ci_tibble$bottleneck_size) #+1# upper bound of confidence interval
-    
-    #if ci_tibble is empty
-    if (length(ci_tibble$Log_Likelihood) == 0) {
-      lower_CI_bottleneck <- min(Max_LL_bottleneck)
-      upper_CI_bottleneck <- max(Max_LL_bottleneck)
-    }
-    if (max(Max_LL_bottleneck) == max(bottleneck_values_vector)) {
-      upper_CI_bottleneck <- max(bottleneck_values_vector)
-      print(
-        "Peak bottleneck value for MLE is at Nb_max (or largest possible value given Nb_increment)!  Try raising Nb_max for better bottleneck estimate"
-      )
-    }
-    if (min(Max_LL_bottleneck) == min(bottleneck_values_vector)) {
-      lower_CI_bottleneck <- min(bottleneck_values_vector)
-      print(
-        "Minimum bottleneck value for MLE is at Nb_min (or smallest possible value given Nb_increment)!  Try lowering Nb_min for better bottleneck estimate"
-      )
-    }
-    
-    confidence[a, 2] <- Max_LL_bottleneck
-    confidence[a, 3] <- upper_CI_bottleneck
-    confidence[a, 4] <- lower_CI_bottleneck
-    
-    # 5. Write output to table at previously defined filename ------------------
-    write.table(
-      LL_tibble,
-      file = filename,
-      sep = "\t",
-      row.names = FALSE,
-      col.names = FALSE
-    )
+    confidence[p, 2] <- 999
+    confidence[p, 3] <- 999
+    confidence[p, 4] <- 999
+    confidence[p, 5] <- 999
   }
 }
 
-# 6. Write housekeeping output to permanent files ------------------------------
-write.table(all_zero,
-            file = "./bottleneckOutput/all_zero.txt",
+rm(list = setdiff(ls(), c("confidence", "ll_out", "num_vars", "warnings")))
+
+# Export everything to files ---------------------------------------------------
+
+write.table(num_vars,
+            file = "./04 - Output/num_vars.txt",
             sep = "\t",
             row.names = FALSE)
 write.table(confidence,
-            file = "./bottleneckOutput/confidence_int.txt",
+            file = "./04 - Output/confidence_int.txt",
             sep = "\t",
             row.names = FALSE)
-
-# 7. Clean up environment ------------------------------------------------------
-rm(list = setdiff(ls(), c()))
+write.table(warnings,
+            file = "./04 - Output/warnings.txt",
+            sep = "\t",
+            row.names = FALSE)
+write.table(ll_out %>% bind_rows(),
+            file = "./04 - Output/logLikelihood.txt",
+            sep = "\t",
+            row.names = FALSE)
