@@ -89,8 +89,8 @@ generateBottleneckInput <- function(final_pairs, df, save = FALSE) {
           both == FALSE & only_donor == FALSE & same_cons == FALSE & dCons_rAlt == TRUE ~ recip_freq,
           .default = NA
         )
-      ) %>% 
-      select(pair_id, region, pos, donor_freq, recip_freq) 
+      ) %>%
+      select(pair_id, region, pos, donor_freq, recip_freq)
     
     # 4. Save data in a list ---------------------------------------------------
     list2[[p]] <- pair_snv

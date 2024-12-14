@@ -69,18 +69,22 @@ generateTvPlotInput <- function(final_pairs, df, save = FALSE) {
       mutate(
         donor_freq = case_when(
           both == TRUE & same_cons == TRUE & same_alt == TRUE ~ donor_freq,
-          both == TRUE & dCons_rAlt == TRUE & dAlt_rCons == TRUE ~ donor_freq,
+          both == TRUE & dCons_rAlt == TRUE ~ donor_freq,
+          
           both == FALSE & only_donor == TRUE & same_cons == TRUE ~ donor_freq,
           both == FALSE & only_donor == TRUE & same_cons == FALSE & dAlt_rCons == TRUE ~ donor_freq,
+          
           both == FALSE & only_donor == FALSE & same_cons == TRUE ~ 0,
           both == FALSE & only_donor == FALSE & same_cons == FALSE & dCons_rAlt == TRUE ~ 1,
           .default = NA
         ),
         recip_freq = case_when(
           both == TRUE & same_cons == TRUE & same_alt == TRUE ~ recip_freq,
-          both == TRUE & dCons_rAlt == TRUE & dAlt_rCons == TRUE ~ 1 - recip_freq,
+          both == TRUE & dCons_rAlt == TRUE ~ 1 - recip_freq,
+          
           both == FALSE & only_donor == TRUE & same_cons == TRUE ~ 0,
           both == FALSE & only_donor == TRUE & same_cons == FALSE & dAlt_rCons == TRUE ~ 1,
+          
           both == FALSE & only_donor == FALSE & same_cons == TRUE ~ recip_freq,
           both == FALSE & only_donor == FALSE & same_cons == FALSE & dCons_rAlt == TRUE ~ recip_freq,
           .default = NA
