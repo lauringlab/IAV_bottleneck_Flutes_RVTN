@@ -108,8 +108,8 @@ write.table(
 )
 
 list_tv <- generateTvPlotInput(final_pairs, df)
-
 tvPlotInput <- bind_rows(list_tv)
+
 write.table(
   tvPlotInput,
   file = "./03 - Input/pairsnv_tv.txt",
