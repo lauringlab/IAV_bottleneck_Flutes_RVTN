@@ -23,19 +23,10 @@ plotBottleneckSizeByMetadataBars <- function(bottleneck_by_metadata, opt = "all"
         lwd = 1,
         col = "grey4"
       ) +
-      # geom_point(aes(
-      #   x = x,
-      #   y = (10 * max_LL) + 5,
-      #   shape = as.factor(no_conf)
-      # ), size = 4) +
       geom_hline(
         yintercept = 20,
         col = "red",
         lwd = 2
-      ) +
-      scale_shape_manual(
-        values = c(NA, 13),
-        labels = c("", "point estimate =\nconfidence interval")
       ) +
       scale_fill_manual(values = c("#691883",
                                    "#ff7e26",

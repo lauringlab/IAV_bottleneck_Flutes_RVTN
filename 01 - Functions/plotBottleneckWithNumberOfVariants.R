@@ -1,6 +1,12 @@
 plotBottleneckWithNumberOfVariants <- function(bottleneck_meta2 = bottleneck_meta2,
-                                               dup = dup,
                                                bottleneck_matrix = out) {
+  season_breaks <- bottleneck_meta2 %>% 
+    select(pair_id, season) %>% 
+    group_by(season) %>% 
+    summarize(max = max(pair_id)) %>% 
+    select(max) %>% 
+    as_vector()
+  
   ggplot() +
     geom_col(
       bottleneck_meta2,
@@ -23,8 +29,8 @@ plotBottleneckWithNumberOfVariants <- function(bottleneck_meta2 = bottleneck_met
                lwd = 1) +
     annotate(
       "text",
-      y = bottleneck_matrix$max_LL * 5 + 10,
-      x = 45,
+      y = bottleneck_matrix$max_LL * 5 + 8,
+      x = 58,
       label = paste('"Weighted average"\nBottleneck size:\n', bottleneck_matrix$max_LL, " (CI:", bottleneck_matrix$lower_CI, ", ", bottleneck_matrix$upper_CI, ")", sep = ""),
       size = 8,
       col = "red",
@@ -35,7 +41,7 @@ plotBottleneckWithNumberOfVariants <- function(bottleneck_meta2 = bottleneck_met
     geom_text(
       tibble(),
       mapping = aes(
-        x = c(1.4, 16.4, 26.4, 51.3),
+        x = season_breaks + c(0.4, 0.4, 0.4, 0.3),
         y = rep(53, 4),
         label = c("2017-2018", "2018-2019", "2019-2020", "2021-2022")
       ),
@@ -45,7 +51,7 @@ plotBottleneckWithNumberOfVariants <- function(bottleneck_meta2 = bottleneck_met
       vjust = 0,
       fontface = "bold"
     ) +
-    geom_vline(xintercept = c(1.5, 16.5, 26.5), lty = 2) +
+    geom_vline(xintercept = season_breaks[1:3] + 0.5, lty = 2) +
     scale_x_continuous(expand = c(0, 0)) +
     theme_bottleneck() +
     theme(
