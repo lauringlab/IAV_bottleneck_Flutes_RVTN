@@ -56,6 +56,7 @@ determineTransmissionPairs2 <- function(df) {
           recipient_index <- c(2, 1, 3, 3)
         } else {
           print("New case you didnt think about :(")
+          print(pair)
         }
       }
     } else if (nrow(pair) == 4) {
@@ -77,8 +78,14 @@ determineTransmissionPairs2 <- function(df) {
                  pair$onset_date[1] < pair$onset_date[4]) {
         donor_index <- c(1, 2, 1, 2, 1, 2)
         recipient_index <- c(2, 1, 3, 3, 4, 4)
-      } else {
+      } else if (pair$onset_date[1] < pair$onset_date[2] &
+                 pair$onset_date[1] < pair$onset_date[3] &
+                 pair$onset_date[1] < pair$onset_date[4]) {
+        donor_index <- c(1, 1, 1)
+        recipient_index <- c(2, 3, 4)
+      }else {
         print("New case you didnt think about :(")
+        print(pair)
       }
     } else if (nrow(pair) == 6) {
       if (nrow(pair %>% select(strain) %>% distinct()) > 1 |
@@ -88,9 +95,11 @@ determineTransmissionPairs2 <- function(df) {
         print("This is likely not a real pair")
       } else {
         print("New case you didnt think about :(")
+        print(pair)
       }
     } else {
       print("New case you didnt think about :(")
+      print(pair)
     }
     
     # 3. Create our output -----------------------------------------------------
