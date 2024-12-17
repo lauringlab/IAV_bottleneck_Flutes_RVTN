@@ -22,7 +22,7 @@ path_to_rvtn_snv <- "~/Dropbox (University of Michigan)/Flu_bottleneck_Flutes_RV
 path_to_flutes_meta <- "~/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Flutes/Vanderbilt_metadata_all_years.csv"
 
 # 1. Data import ---------------------------------------------------------------
-flutes_unified <- joinFlutesSnvToMeta(path_to_flutes_snv, path_to_flutes_meta, ctThresh = 30)
+flutes_unified <- joinFlutesSnvToMeta(path_to_flutes_snv, path_to_flutes_meta, ctThresh = 100)
 rvtn_unified <- joinRvtnSnvToMeta(path_to_fulldat, path_to_ddlabdat, path_to_rvtn_snv)
 df <- bind_rows(rvtn_unified, flutes_unified)
 
