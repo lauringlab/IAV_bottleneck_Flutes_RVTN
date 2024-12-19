@@ -6,8 +6,8 @@ cleanUnifiedDataset <- function(df,
     mutate(onset_date = if_else(is.na(onset_date), collection_date, onset_date))
   
   # 2. Filter for indeterminate vaccination status -----------------------------
-  out <- out %>% 
-    filter(vax == 0 | vax == 1)
+  # out <- out %>% 
+  #   filter(vax == 0 | vax == 1)
   
   # 3. Apply filter for too many iSNVs -----------------------------------------
   if (filter == TRUE) {
@@ -36,9 +36,11 @@ cleanUnifiedDataset <- function(df,
   
   # 5. Filter for first samples from each individual ---------------------------
   first <- out %>% 
-    select(hhid, hhsubid, collection_date, sample) %>% 
+    mutate(collection = ifelse(season == 21, 5, str_sub(sample, 8, 8))) %>%
+    mutate(collection = ifelse(collection == 5, 1, 2)) %>% 
+    select(hhid, hhsubid, collection_date, sample, collection) %>% 
     distinct() %>% 
-    arrange(hhsubid, collection_date) %>% 
+    arrange(hhsubid, collection_date, collection) %>% 
     group_by(hhsubid) %>% 
     mutate(sample_num = row_number()) %>% 
     ungroup() %>% 
