@@ -51,6 +51,7 @@ joinRvtnSnvToMeta <- function(path_to_fulldat,
   # 3. Join metadata and snv data ----------------------------------------------
   rvtn_unified <- rvtn_snv %>%
     left_join(rvtn_meta, multiple = "all") %>%
+    # full_join(rvtn_meta, multiple = "all") %>%
     select(
       sample,
       hhsubid,

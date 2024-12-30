@@ -72,6 +72,7 @@ joinFlutesSnvToMeta <- function(path_to_flutes_snv,
   # 3. Join metadata and snv data ----------------------------------------------
   flutes_unified <- flutes_snv %>%
     left_join(flutes_meta) %>%
+    # full_join(flutes_meta) %>%
     mutate(site = "nashville") %>%
     select(
       sample,

@@ -22,6 +22,7 @@ path_to_rvtn_snv <- "~/Dropbox (University of Michigan)/Flu_bottleneck_Flutes_RV
 path_to_flutes_meta <- "~/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Flutes/Vanderbilt_metadata_all_years.csv"
 
 # 1. Data import ---------------------------------------------------------------
+#TODO: figure out how to switch full join to left join
 flutes_unified <- joinFlutesSnvToMeta(path_to_flutes_snv, path_to_flutes_meta, ctThresh = 100)
 rvtn_unified <- joinRvtnSnvToMeta(path_to_fulldat, path_to_ddlabdat, path_to_rvtn_snv)
 df <- bind_rows(rvtn_unified, flutes_unified)
@@ -39,7 +40,7 @@ write.table(
 
 # 2. Clean data ----------------------------------------------------------------
 df <- cleanUnifiedDataset(df, filter = TRUE, nSnvFilterThresh = 50)
-
+# TODO: Change to retain 99 vaccination until end
 # 3. Combine consensus information with iSNV dataset ---------------------------
 all_cons <- createUnifiedConsensusData()
 
