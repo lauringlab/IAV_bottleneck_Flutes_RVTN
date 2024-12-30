@@ -17,7 +17,7 @@ determineTransmissionPairs2 <- function(df) {
     
     # 2. Pull out matrix indexes -------------------------------------------------
     if (nrow(pair) < 2) {
-      print("There isn't enough people in this household...")
+      print("There aren't enough people in this household...")
     } else if (nrow(pair) == 2) {
       if (pair$strain[1] != pair$strain[2] |
           abs(pair$onset_date[1] - pair$onset_date[2]) > 14) {
