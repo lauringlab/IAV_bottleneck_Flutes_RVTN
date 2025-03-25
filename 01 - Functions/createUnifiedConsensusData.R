@@ -1,4 +1,4 @@
-createUnifiedConsensusData <- function() {
+createUnifiedConsensusData <- function(includeRvtn = TRUE) {
   # 1. Setup -------------------------------------------------------------------
   source("01 - Functions/getConsensus.R")
   
@@ -35,6 +35,7 @@ createUnifiedConsensusData <- function() {
   list[[2]] <- Singapore_H3N2_2018
   
   # 4. Darwin_H3N2_2021 --------------------------------------------------------
+  if(includeRvtn == TRUE){
   Darwin_H3N2_2021 <- phylotools::read.fasta(darwin_fasta) %>%
     ungroup() %>%
     dplyr::rename(sample = seq.name, CONS = seq.text) %>%
@@ -50,6 +51,7 @@ createUnifiedConsensusData <- function() {
     select(sample, REGION, POS, CONS, strain)
   
   list[[3]] <- Darwin_H3N2_2021
+  }
   
   # 5. HongKong_H3N2_2017 ------------------------------------------------------
   HongKong_H3N2_2017 <- read.csv(hongkong_pos) %>%
