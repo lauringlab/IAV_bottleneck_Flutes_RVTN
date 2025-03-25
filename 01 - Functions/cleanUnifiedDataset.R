@@ -5,28 +5,31 @@ cleanUnifiedDataset <- function(df,
   out <- df %>%
     mutate(onset_date = if_else(is.na(onset_date), collection_date, onset_date))
   
-  # 2. Filter for indeterminate vaccination status -----------------------------
-  # out <- out %>% 
-  #   filter(vax == 0 | vax == 1)
-  
-  # 3. Apply filter for too many iSNVs -----------------------------------------
+  # 2. Apply filter for too many iSNVs -----------------------------------------
   if (filter == TRUE) {
     num_snv <- out %>%
       group_by(sample) %>%
-      count() %>%
+      dplyr::count() %>%
       filter(n < nSnvFilterThresh) %>%
       select(sample) %>% 
       as_vector()
     
     out <- out %>% 
       filter(sample %in% num_snv)
+  }
+  
+  # 3. Impute the things that are missing from Flutes --------------------------
+  out <- out %>% 
+    mutate(hhsubid = ifelse(is.na(hhsubid), str_sub(sample, 1, 7), hhsubid),
+           hhid = ifelse(is.na(hhid), str_sub(sample, 1, 5), hhid),
+           site = ifelse(is.na(site), "nashville", site))
   
   # 4. Filter for only hhids with more than one person -------------------------
   house <- out %>%
     select(hhsubid, hhid) %>%
     distinct() %>%
     group_by(hhid) %>%
-    count() %>%
+    dplyr::count() %>%
     filter(n > 1) %>%
     select(hhid) %>%
     as_vector()
@@ -50,8 +53,12 @@ cleanUnifiedDataset <- function(df,
   
   out <- out %>% 
     filter(sample %in% first)
-    
-  }
+  
+  # 6. Only keep those variables that we actually care about -------------------
+  
+  out <- out %>% 
+    select(sample, hhsubid, hhid, site, season, age, sex, vax, collection_date, onset_date, region, pos, ref, alt, strain, avg_freq)
+  
   
   return(out)
 }
