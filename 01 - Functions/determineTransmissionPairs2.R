@@ -87,6 +87,22 @@ determineTransmissionPairs2 <- function(df) {
         print("New case you didnt think about :(")
         print(pair)
       }
+    } else if (nrow(pair) == 5) {
+      if (nrow(pair %>% select(strain) %>% distinct()) > 1 |
+          any(c(0, as.numeric(diff(
+            pair$onset_date
+          ))) > 14)) {
+        print("This is likely not a real pair")
+      } else if (pair$onset_date[1] < pair$onset_date[2] &
+                 pair$onset_date[2] < pair$onset_date[3] &
+                 pair$onset_date[2] < pair$onset_date[4] &
+                 pair$onset_date[1] < pair$onset_date[5]) {
+        donor_index <- c(1, 1, 1, 1)
+        recipient_index <- c(2, 3, 4, 5)
+      } else {
+        print("New case you didnt think about :(")
+        print(pair)
+      }
     } else if (nrow(pair) == 6) {
       if (nrow(pair %>% select(strain) %>% distinct()) > 1 |
           any(c(0, as.numeric(diff(
