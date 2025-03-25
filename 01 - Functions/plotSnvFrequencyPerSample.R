@@ -1,6 +1,6 @@
 plotSnvFrequencyPerSample <- function(ind_snv,
                                       var_thresh = 0.02,
-                                      faceted = TRUE) {
+                                      faceted = FALSE) {
   df <- ind_snv %>%
     mutate(
       excluded = ifelse(avg_freq < var_thresh, "No", "Yes"),
@@ -52,7 +52,8 @@ plotSnvFrequencyPerSample <- function(ind_snv,
         binwidth = 0.02,
         boundary = 0,
         closed = "left",
-        col = "grey2"
+        fill = "#BB00BB",
+        col = "white"
       ) +
       # scale_fill_manual(values = c("#9A3324", "lightgrey")) +
       xlab("SNV frequency") +

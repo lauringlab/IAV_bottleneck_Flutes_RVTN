@@ -29,8 +29,8 @@ plotBottleneckWithNumberOfVariants <- function(bottleneck_meta2 = bottleneck_met
                lwd = 1) +
     annotate(
       "text",
-      y = bottleneck_matrix$max_LL * 5 + 8,
-      x = 58,
+      y = bottleneck_matrix$max_LL * 5 + 10,
+      x = 56,
       label = paste('"Weighted average"\nBottleneck size:\n', bottleneck_matrix$max_LL, " (CI:", bottleneck_matrix$lower_CI, ", ", bottleneck_matrix$upper_CI, ")", sep = ""),
       size = 8,
       col = "red",

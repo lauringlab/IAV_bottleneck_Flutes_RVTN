@@ -1,4 +1,4 @@
-joinRvtnSnvToMeta <- function(path_to_fulldat,
+joinRvtnSnvToMeta_new <- function(path_to_fulldat,
                               path_to_ddlabdat,
                               path_to_rvtn_snv,
                               sequenced_ids_df = sequenced_ids_df) {
@@ -72,7 +72,8 @@ joinRvtnSnvToMeta <- function(path_to_fulldat,
       ref,
       alt,
       avg_freq
-    )
+    ) %>% 
+    right_join(rvtn_sequenced_ids) 
   
   return(rvtn_unified)
 }

@@ -3,9 +3,10 @@ calculateOverallBottleneck <- function(df) {
   
   total_LL <- df %>%
     select(bottleneck_size, log_likelihood, n_variants) %>%
+    mutate(log_likelihood = if_else(log_likelihood == "-Inf", NA, log_likelihood)) %>% #TODO: Figure out a little better why this is happening
     mutate(adjusted_LL = (max_num_snps / n_variants) * log_likelihood) %>%
     group_by(bottleneck_size) %>%
-    summarise(adjusted_LL = sum(adjusted_LL))
+    summarise(adjusted_LL = sum(adjusted_LL, na.rm = TRUE))
   
   Max_LL <- max(total_LL$adjusted_LL)
   Max_LL_bottleneck_index <-

@@ -1,5 +1,7 @@
-plotBottleneckSizeByMetadataBars <- function(bottleneck_by_metadata, opt = "all") {
+plotBottleneckSizeByMetadataBars <- function(df, bottleneck_by_metadata, opt = "all") {
   if (opt == "all") {
+    bottleneck_matrix <- calculateOverallBottleneck(df)
+    
     levels <- c("17/18", "18/19", "19/20", "21/22",
                 "H1N1", "H3N2",
                 "Adult-to-adult", "Adult-to-child", "Child-to-adult", "Child-to-child",
@@ -23,11 +25,6 @@ plotBottleneckSizeByMetadataBars <- function(bottleneck_by_metadata, opt = "all"
         lwd = 1,
         col = "grey4"
       ) +
-      geom_hline(
-        yintercept = 20,
-        col = "red",
-        lwd = 2
-      ) +
       scale_fill_manual(values = c("#691883",
                                    "#ff7e26",
                                    "#b148d2",
@@ -49,6 +46,18 @@ plotBottleneckSizeByMetadataBars <- function(bottleneck_by_metadata, opt = "all"
       guides(shape = guide_legend(position = "top")) +
       geom_vline(xintercept = c(4.5, 6.5, 10.5, 14.5)) +
       theme_bottleneck() +
+      geom_hline(yintercept = bottleneck_matrix$max_LL * 10,
+                 col = "red",
+                 lwd = 1) +
+      annotate(
+        "text",
+        y = bottleneck_matrix$max_LL * 10 + 15,
+        x = 16.5,
+        label = paste('"Weighted average"\nBottleneck size:\n', bottleneck_matrix$max_LL, " (CI:", bottleneck_matrix$lower_CI, ", ", bottleneck_matrix$upper_CI, ")", sep = ""),
+        size = 8,
+        col = "red",
+        fontface = "bold",
+        lineheight = 0.8) +
       theme(
         legend.title = element_blank(),
         legend.position = "none",

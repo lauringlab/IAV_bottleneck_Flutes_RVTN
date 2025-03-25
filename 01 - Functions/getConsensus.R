@@ -19,6 +19,7 @@ getConsensus <- function(path_to_length_file,
     as_vector()
   
   out <- read.fasta(path_to_fasta_file) %>%
+    as_tibble() %>% 
     dplyr::rename(sample = seq.name, CONS = seq.text) %>%
     filter(sample != ref_name) %>%
     mutate(CONS = str_split(CONS, "(?=.)")) %>%

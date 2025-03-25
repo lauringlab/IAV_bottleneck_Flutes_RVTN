@@ -1,7 +1,7 @@
 plotSnvPerSample <- function(ind_snv, measure = median, faceted = FALSE) {
   df <- ind_snv %>%
     group_by(sample, season) %>%
-    count() %>% 
+    tally() %>% 
     mutate(season = case_when(
       season == 17 ~ "17/18",
       season == 18 ~ "18/19",
@@ -52,15 +52,15 @@ plotSnvPerSample <- function(ind_snv, measure = median, faceted = FALSE) {
         binwidth = 3,
         boundary = 0,
         closed = "left",
-        fill = "lightgrey",
-        col = "grey2"
+        fill = "#FF86FF",
+        col = "white"
       ) +
       scale_x_continuous(
         limits = c(0, 39),
         breaks = seq(0, 40, 3),
         expand = c(0, 0)
       ) +
-      scale_y_continuous(limits = c(0, 25),
+      scale_y_continuous(limits = c(0, 30),
                          breaks = pretty,
                          expand = c(0, 0)) +
       # geom_vline(xintercept = measure,
