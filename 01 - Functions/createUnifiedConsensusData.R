@@ -48,7 +48,7 @@ createUnifiedConsensusData <- function(includeRvtn = TRUE) {
     ungroup() %>%
     group_by(sample, REGION) %>%
     mutate(POS = row_number()) %>%
-    select(sample, REGION, POS, CONS, strain)
+    dplyr::select(sample, REGION, POS, CONS, strain)
   
   list[[3]] <- Darwin_H3N2_2021
   }
@@ -57,7 +57,7 @@ createUnifiedConsensusData <- function(includeRvtn = TRUE) {
   HongKong_H3N2_2017 <- read.csv(hongkong_pos) %>%
     dplyr::rename(CONS = consensus_allele, REGION = CHROM) %>%
     mutate(strain = "HongKong_H3N2_2017") %>% 
-    select(sample, REGION, POS, CONS, strain) 
+    dplyr::select(sample, REGION, POS, CONS, strain) 
   
   list[[4]] <- HongKong_H3N2_2017
   
@@ -65,7 +65,7 @@ createUnifiedConsensusData <- function(includeRvtn = TRUE) {
   Michigan_H1N1_2017 <- read.csv(michigan_pos) %>%
     dplyr::rename(CONS = consensus_allele, REGION = CHROM) %>%
     mutate(strain = "Mighigan_H1N1_2017") %>% 
-    select(sample, REGION, POS, CONS, strain) 
+    dplyr::select(sample, REGION, POS, CONS, strain) 
   
   list[[5]] <- Michigan_H1N1_2017
   

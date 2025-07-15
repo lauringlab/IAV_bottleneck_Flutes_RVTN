@@ -15,10 +15,10 @@ getConsensus <- function(path_to_length_file,
   )
   
   length_to_add <- read_csv(path_to_length_file) %>%
-    select(column_with_lengths) %>%
+    dplyr::select(column_with_lengths) %>%
     as_vector()
   
-  out <- read.fasta(path_to_fasta_file) %>%
+  out <- phylotools::read.fasta(path_to_fasta_file) %>%
     as_tibble() %>% 
     dplyr::rename(sample = seq.name, CONS = seq.text) %>%
     filter(sample != ref_name) %>%
@@ -45,7 +45,7 @@ getConsensus <- function(path_to_length_file,
     ) %>%
     group_by(sample, REGION) %>%
     mutate(POS = row_number()) %>%
-    select(sample, REGION, POS, CONS, strain)
+    dplyr::select(sample, REGION, POS, CONS, strain)
   
   return(out)
 }

@@ -11,54 +11,81 @@ cleanUnifiedDataset <- function(df,
       group_by(sample) %>%
       dplyr::count() %>%
       filter(n < nSnvFilterThresh) %>%
-      select(sample) %>% 
+      dplyr::select(sample) %>%
       as_vector()
     
-    out <- out %>% 
+    out <- out %>%
       filter(sample %in% num_snv)
   }
   
   # 3. Impute the things that are missing from Flutes --------------------------
-  out <- out %>% 
-    mutate(hhsubid = ifelse(is.na(hhsubid), str_sub(sample, 1, 7), hhsubid),
-           hhid = ifelse(is.na(hhid), str_sub(sample, 1, 5), hhid),
-           site = ifelse(is.na(site), "nashville", site))
+  out <- out %>%
+    mutate(
+      hhsubid = ifelse(is.na(hhsubid), str_sub(sample, 1, 7), hhsubid),
+      hhid = ifelse(is.na(hhid), str_sub(sample, 1, 5), hhid),
+      site = ifelse(is.na(site), "nashville", site)
+    )
   
   # 4. Filter for only hhids with more than one person -------------------------
   house <- out %>%
-    select(hhsubid, hhid) %>%
+    dplyr::select(hhsubid, hhid) %>%
     distinct() %>%
     group_by(hhid) %>%
     dplyr::count() %>%
     filter(n > 1) %>%
-    select(hhid) %>%
+    dplyr::select(hhid) %>%
     as_vector()
   
-  out <- out %>% 
+  out <- out %>%
     filter(hhid %in% house)
   
   # 5. Filter for first samples from each individual ---------------------------
-  first <- out %>% 
+  first <- out %>%
     mutate(collection = ifelse(season == 21, 5, str_sub(sample, 8, 8))) %>%
-    mutate(collection = ifelse(collection == 5, 1, 2)) %>% 
-    select(hhid, hhsubid, collection_date, sample, collection) %>% 
-    distinct() %>% 
-    arrange(hhsubid, collection_date, collection) %>% 
-    group_by(hhsubid) %>% 
-    mutate(sample_num = row_number()) %>% 
-    ungroup() %>% 
-    filter(sample_num == 1) %>% 
-    select(sample) %>% 
+    mutate(collection = ifelse(collection == 5, 1, 2)) %>%
+    dplyr::select(hhid, hhsubid, collection_date, sample, collection) %>%
+    distinct() %>%
+    arrange(hhsubid, collection_date, collection) %>%
+    group_by(hhsubid) %>%
+    mutate(sample_num = row_number()) %>%
+    ungroup() %>%
+    filter(sample_num == 1) %>%
+    dplyr::select(sample) %>%
     as_vector()
   
-  out <- out %>% 
+  out <- out %>%
     filter(sample %in% first)
   
-  # 6. Only keep those variables that we actually care about -------------------
-  
+  # 6. Remove the two ids that are not real pairs ------------------------------
+
   out <- out %>% 
-    select(sample, hhsubid, hhid, site, season, age, sex, vax, collection_date, onset_date, region, pos, ref, alt, strain, avg_freq)
+    dplyr::filter(sample != 1803804003 & hhid != 18041)
   
+  # 7. Only keep those variables that we actually care about -------------------
+  
+  out <- out %>%
+    dplyr::select(
+      sample,
+      hhsubid,
+      hhid,
+      site,
+      season,
+      age,
+      sex,
+      vax,
+      collection_date,
+      onset_date,
+      region,
+      pos,
+      ref,
+      alt,
+      strain,
+      avg_freq,
+      rep1_freq,
+      rep2_freq,
+      mutation_type,
+      subtype_ct
+    )
   
   return(out)
 }

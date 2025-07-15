@@ -15,12 +15,12 @@ generateTvPlotInput <- function(final_pairs, df, save = FALSE) {
         donor_cons = cons,
         donor_freq = avg_freq
       ) %>%
-      select(region, pos, donor_ref, donor_alt, donor_cons, donor_freq) %>%
+      dplyr::select(region, pos, donor_ref, donor_alt, donor_cons, donor_freq) %>%
       mutate(sample = temp$recipient_id) %>%
       left_join(all_cons) %>%
       dplyr::rename(recip_cons = cons) %>%
       relocate(recip_cons, .after = donor_cons) %>%
-      select(-sample)
+      dplyr::select(-sample)
     
     recip_snv <- df %>%
       filter(sample == temp$recipient_id) %>%
@@ -30,18 +30,18 @@ generateTvPlotInput <- function(final_pairs, df, save = FALSE) {
         recip_cons = cons,
         recip_freq = avg_freq
       ) %>%
-      select(region, pos, recip_ref, recip_alt, recip_cons, recip_freq) %>%
+      dplyr::select(region, pos, recip_ref, recip_alt, recip_cons, recip_freq) %>%
       mutate(sample = temp$donor_id) %>%
       left_join(all_cons) %>%
       dplyr::rename(donor_cons = cons) %>%
       relocate(donor_cons, .after = recip_cons) %>%
-      select(-sample)
+      dplyr::select(-sample)
     
     # 3. Correct for different consensus ---------------------------------------
     pair_snv <- full_join(donor_snv, recip_snv) %>%
       mutate(pair_id = p) %>%
       relocate(pair_id) %>%
-      select(-strain) %>%
+      dplyr::select(-strain) %>%
       relocate(
         c(
           donor_ref,
@@ -90,7 +90,7 @@ generateTvPlotInput <- function(final_pairs, df, save = FALSE) {
           .default = NA
         )
       ) %>%
-      select(pair_id, region, pos, donor_freq, recip_freq)
+      dplyr::select(pair_id, region, pos, donor_freq, recip_freq)
     
     # 4. Save data in a list ---------------------------------------------------
     list2[[p]] <- pair_snv

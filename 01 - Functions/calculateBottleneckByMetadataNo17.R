@@ -1,4 +1,4 @@
-calculateBottleneckByMetadata <- function(pathToConfidenceInterval = "04 - Output/confidence_int.txt",
+calculateBottleneckByMetadataNo17 <- function(pathToConfidenceInterval = "04 - Output/confidence_int.txt",
                                           pathToLogLikelihood = "04 - Output/logLikelihood.txt",
                                           pathToNumVars = "04 - Output/num_vars.txt",
                                           pathToPairMeta = "03 - Input/pair_meta.txt") {
@@ -52,11 +52,13 @@ calculateBottleneckByMetadata <- function(pathToConfidenceInterval = "04 - Outpu
   df <- logLikelihood %>%
     full_join(confidence_int) %>%
     full_join(num_vars) %>%
-    dplyr::rename(log_likelihood = Log_Likelihood)
+    dplyr::rename(log_likelihood = Log_Likelihood) %>% 
+    dplyr::filter(pair != 1)
   
   df2 <- df %>%
     dplyr::rename(pair_id = pair) %>%
-    full_join(bottleneck_meta2)
+    full_join(bottleneck_meta2) %>% 
+    dplyr::filter(pair_id != 1)
   
   # Actual weighted average bottleneck calculation -----------------------------
   

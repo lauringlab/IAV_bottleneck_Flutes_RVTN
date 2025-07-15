@@ -1,7 +1,7 @@
 determineTransmissionPairs2 <- function(df) {
   # 1. Setup step --------------------------------------------------------------
   household <- df %>%
-    select(hhid) %>%
+    dplyr::select(hhid) %>%
     distinct() %>%
     as_vector()
   
@@ -11,7 +11,7 @@ determineTransmissionPairs2 <- function(df) {
     house <- household[n]
     pair <- df %>%
       filter(hhid == house) %>%
-      select(sample, site, season, age, sex, vax, onset_date, collection_date, strain) %>%
+      dplyr::select(sample, site, season, age, sex, vax, onset_date, collection_date, strain) %>%
       distinct() %>%
       arrange(onset_date)
     
@@ -88,7 +88,7 @@ determineTransmissionPairs2 <- function(df) {
         print(pair)
       }
     } else if (nrow(pair) == 5) {
-      if (nrow(pair %>% select(strain) %>% distinct()) > 1 |
+      if (nrow(pair %>% dplyr::select(strain) %>% distinct()) > 1 |
           any(c(0, as.numeric(diff(
             pair$onset_date
           ))) > 14)) {
@@ -104,7 +104,7 @@ determineTransmissionPairs2 <- function(df) {
         print(pair)
       }
     } else if (nrow(pair) == 6) {
-      if (nrow(pair %>% select(strain) %>% distinct()) > 1 |
+      if (nrow(pair %>% dplyr::select(strain) %>% distinct()) > 1 |
           any(c(0, as.numeric(diff(
             pair$onset_date
           ))) > 14)) {

@@ -26,7 +26,7 @@ joinRvtnSnvToMeta_new <- function(path_to_fulldat,
       hhid = as.numeric(hhid),
       vax = ifelse(vax == "Vaccinated", 1, ifelse(vax == "Unvaccinated", 0, 99))
     ) %>%
-    select(
+    dplyr::select(
       sample,
       hhsubid,
       hhid,
@@ -45,18 +45,20 @@ joinRvtnSnvToMeta_new <- function(path_to_fulldat,
   rvtn_snv <- read.csv(path_to_rvtn_snv)
   
   rvtn_snv <- rvtn_snv %>%
-    select(sample, REGION, POS, REF, ALT, avg_freq, mutation_type) %>%
+    dplyr::select(sample, REGION, POS, REF, ALT, avg_freq, ALT_FREQ_1, ALT_FREQ_2, mutation_type) %>%
     dplyr::rename(
       ref = REF,
       region = REGION,
       pos = POS,
-      alt = ALT
+      alt = ALT,
+      rep1_freq = ALT_FREQ_1,
+      rep2_freq = ALT_FREQ_2
     )
   
   # 3. Join metadata and snv data ----------------------------------------------
   rvtn_unified <- rvtn_snv %>%
     full_join(rvtn_meta, multiple = "all") %>%
-    select(
+    dplyr::select(
       sample,
       hhsubid,
       hhid,
@@ -71,7 +73,10 @@ joinRvtnSnvToMeta_new <- function(path_to_fulldat,
       pos,
       ref,
       alt,
-      avg_freq
+      avg_freq,
+      rep1_freq, 
+      rep2_freq,
+      mutation_type
     ) %>% 
     right_join(rvtn_sequenced_ids) 
   
