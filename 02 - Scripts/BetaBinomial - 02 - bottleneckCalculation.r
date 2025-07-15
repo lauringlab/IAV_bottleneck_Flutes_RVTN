@@ -13,7 +13,7 @@ sapply(file.sources, source, .GlobalEnv)
 rm(file.sources)
 
 ### Setup importing of pairs iSNVs ###
-files <- list.files("./03 - Input/processedData") %>%
+files <- list.files('/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/00 - pairDataforCalculation/') %>%
   data.frame() %>%
   mutate(
     pair = str_replace(., "pair_", ""),
@@ -40,7 +40,7 @@ ll_out <- list()
 
 ### Begin loop ###
 for (p in 1:max(pairs)) {
-  filename <- paste("./03 - Input/processedData/",
+  filename <- paste('/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/00 - pairDataforCalculation/',
                     paste(paste("pair", p, sep = "_"), ".txt", sep = ""),
                     sep = "")
   
@@ -162,18 +162,18 @@ rm(list = setdiff(ls(), c("confidence", "ll_out", "num_vars", "warnings")))
 # Export everything to files ---------------------------------------------------
 
 write.table(num_vars,
-            file = "./04 - Output/num_vars.txt",
+            file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/01 - Output/num_vars.txt",
             sep = "\t",
             row.names = FALSE)
 write.table(confidence,
-            file = "./04 - Output/confidence_int.txt",
+            file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/01 - Output/confidence_int.txt",
             sep = "\t",
             row.names = FALSE)
 write.table(warnings,
-            file = "./04 - Output/warnings.txt",
+            file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/01 - Output/warnings.txt",
             sep = "\t",
             row.names = FALSE)
 write.table(ll_out %>% bind_rows(),
-            file = "./04 - Output/logLikelihood.txt",
+            file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/01 - Output/logLikelihood.txt",
             sep = "\t",
             row.names = FALSE)

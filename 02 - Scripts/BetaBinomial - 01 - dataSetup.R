@@ -36,7 +36,7 @@ all_cons <- createUnifiedConsensusData() %>%
 
 sequenced_ids_df <- all_cons %>%
   ungroup() %>%
-  select(sample, strain) %>%
+  dplyr::select(sample, strain) %>%
   distinct() %>%
   mutate(sequenced = TRUE) %>%
   na.omit()
@@ -55,7 +55,7 @@ passed <- sequenced_ids_df %>%
 
 sequenced_ids_df <- passed %>%
   filter(Pass_coverage == "Pass" & sequenced == TRUE) %>%
-  select(sample, strain, sequenced)
+  dplyr::select(sample, strain, sequenced)
 
 # 1. Data import ---------------------------------------------------------------
 flutes_unified <- joinFlutesSnvToMeta_new(
@@ -81,14 +81,14 @@ df <- cleanUnifiedDataset(df, filter = TRUE, nSnvFilterThresh = 50)
 
 # 3. Combine consensus information with iSNV dataset ---------------------------
 ids <- df %>%
-  select(sample) %>%
+  dplyr::select(sample) %>%
   distinct() %>%
   as_vector()
 
 all_cons2 <- all_cons %>%
   filter(sample %in% ids) %>% 
   ungroup() %>% 
-  select(sample, strain) %>% 
+  dplyr::select(sample, strain) %>% 
   distinct()
 
 all_cons3 <- all_cons %>% 
@@ -103,8 +103,16 @@ df <- df %>%
 final_pairs <- determineTransmissionPairs2(df)
 
 # 6. Create input for plotting script ------------------------------------------
+write.table(
+  df,
+  file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/sample_data_with_meta.txt",
+  sep = "\t",
+  row.names = FALSE,
+  col.names = TRUE
+)
+
 pair_meta_out <- final_pairs %>%
-  select(
+  dplyr::select(
     pair_id,
     donor_id,
     recipient_id,
@@ -127,7 +135,7 @@ pair_meta_out <- final_pairs %>%
 
 write.table(
   pair_meta_out,
-  file = "./03 - Input/pair_meta.txt",
+  file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/pair_meta.txt",
   sep = "\t",
   row.names = FALSE,
   col.names = TRUE
@@ -137,7 +145,7 @@ pairs <- 1:nrow(pair_meta_out) %>%
 
 write.table(
   pairs,
-  file = "./03 - Input/pairs.txt",
+  file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/pairs.txt",
   sep = "\t",
   row.names = FALSE,
   col.names = FALSE
@@ -145,7 +153,7 @@ write.table(
 
 write.table(
   df,
-  file = "./03 - Input/indsnv.txt",
+  file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/indsnv.txt",
   sep = "\t",
   row.names = FALSE,
   col.names = TRUE
@@ -156,7 +164,7 @@ tvPlotInput <- bind_rows(list_tv)
 
 write.table(
   tvPlotInput,
-  file = "./03 - Input/pairsnv_tv.txt",
+  file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/pairsnv_tv.txt",
   sep = "\t",
   row.names = FALSE,
   col.names = TRUE
@@ -168,7 +176,7 @@ list2 <- generateBottleneckInput(final_pairs, df, save = TRUE)
 all_snv <- bind_rows(list2)
 write.table(
   all_snv,
-  file = "./03 - Input/pairsnv.txt",
+  file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/pairsnv.txt",
   sep = "\t",
   row.names = FALSE,
   col.names = TRUE
