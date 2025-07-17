@@ -1,16 +1,4 @@
-makePairTable <- function() {
-  isnv_pair <- read.table(
-    "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/pair_meta.txt",
-    header = TRUE
-  ) %>%
-    # Remove the pairs that were removed from the dataset due to no iSNVs
-    filter(pair_id != 55 & pair_id != 62 & pair_id != 63)
-  
-  clonal_pair <- read.table(
-    "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/Clonal_data/clonal_dist_with_meta.txt",
-    header = TRUE
-  )
-  
+makePairTable <- function(isnv_pair, clonal_pair) {
   list <- list()
   
   # Basic characteristics ------------------------------------------------------
