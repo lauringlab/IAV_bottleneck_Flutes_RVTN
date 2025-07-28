@@ -11,14 +11,16 @@ library(seqinr)
 setwd("/Users/katykrupinsky/git/FluTES_bottleneck")
 
 # 0. File paths ----------------------------------------------------------------
-files.sources <- list.files(path = "./01 - Functions",
-                            pattern = "*.R",
-                            full.names = TRUE) %>%
-  as_tibble() %>%
-  filter(value != "./01 - Functions/README.txt") %>%
-  as_vector()
-sapply(files.sources, source)
-rm(files.sources)
+source("./01 - Functions/createUnifiedConsensusData.R")
+source("./01 - Functions/joinFlutesSnvToMeta_new.R")
+source("./01 - Functions/joinRvtnSnvToMeta_new.R")
+source("./01 - Functions/getRvtnMetadata.R")
+source("./01 - Functions/cleanUnifiedDataset.R")
+source("./01 - Functions/determineTransmissionPairs2.R")
+source("./01 - Functions/generateTvPlotInput.R")
+source("./01 - Functions/generateBottleneckInput.R")
+
+
 path_to_fulldat <- "/Users/katykrupinsky/University of Michigan Dropbox/Katy Krupinsky/CDC_RVTN_FLUTES_Flu/CDC_RVTN_FLUTES_Flu_2/fulldat_lauring_flu2023-12-07.csv"
 path_to_ddlabdat <- "/Users/katykrupinsky/University of Michigan Dropbox/Katy Krupinsky/CDC_RVTN_FLUTES_Flu/CDC_RVTN_FLUTES_Flu_2/ddlabdat_lauring_flu2023-12-07.csv"
 path_to_flutes_snv <- "~/Dropbox (University of Michigan)/Flu_bottleneck_Flutes_RVTN/Flutes/SNV_with_meta_data.csv"
@@ -171,7 +173,7 @@ write.table(
 )
 
 # 7. Create input for bottleneck calculation -----------------------------------
-### NOTE: For input into the beta-binoial model, 0 values are not tolerated. To
+### NOTE: For input into the beta-binomial model, 0 values are not tolerated. To
 ### account for this, we take the inverse of each of the values. 
 
 list2 <- generateBottleneckInput(final_pairs, df, save = TRUE)
@@ -184,3 +186,5 @@ write.table(
   row.names = FALSE,
   col.names = TRUE
 )
+
+rm(list = setdiff(ls(), c()))
