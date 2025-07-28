@@ -1,5 +1,5 @@
 ## Title: Creation of Input Files for Bottleneck Calculations - Clonal Method
-## Date Last Modified: 03/25/25
+## Date Last Modified: 07/28/25
 ## Description: This code takes the  metadata files provided by CDC in and
 ## merges them with the SNV data created by the lab. It then will pull consensus
 ## sequence data for all seasons and add it to the  data frame. Finally, it
@@ -11,15 +11,16 @@ library(seqinr)
 setwd("/Users/katykrupinsky/git/FluTES_bottleneck")
 
 # 0. File paths ----------------------------------------------------------------
-files.sources <- list.files(path = "./01 - Functions",
-                            pattern = "*.R",
-                            full.names = TRUE) %>%
-  as_tibble() %>%
-  filter(value != "./01 - Functions/README.txt") %>%
-  as_vector()
-sapply(files.sources, source)
-source("./06 - Clonal Method Code/01 - Functions/createClonalDataByCoFactors.R")
-rm(files.sources)
+source("./01 - Functions/createClonalDataByCoFactors.R")
+source("./01 - Functions/createUnifiedConsensusData.R")
+source("./01 - Functions/createUnifiedConsensusDataTrimmed.R")
+source("./01 - Functions/joinFlutesSnvToMeta_new.R")
+source("./01 - Functions/joinRvtnSnvToMeta_new.R")
+source("./01 - Functions/getRvtnMetadata.R")
+source("./01 - Functions/cleanUnifiedDataset.R")
+source("./01 - Functions/determineTransmissionPairs_clonal.R")
+source("./01 - Functions/createClonalSummary.R")
+
 path_to_fulldat <- "/Users/katykrupinsky/University of Michigan Dropbox/Katy Krupinsky/CDC_RVTN_FLUTES_Flu/CDC_RVTN_FLUTES_Flu_2/fulldat_lauring_flu2023-12-07.csv"
 path_to_ddlabdat <- "/Users/katykrupinsky/University of Michigan Dropbox/Katy Krupinsky/CDC_RVTN_FLUTES_Flu/CDC_RVTN_FLUTES_Flu_2/ddlabdat_lauring_flu2023-12-07.csv"
 path_to_flutes_snv <- "~/Dropbox (University of Michigan)/Flu_bottleneck_Flutes_RVTN/Flutes/SNV_with_meta_data.csv"
@@ -27,8 +28,8 @@ path_to_rvtn_snv <- "~/Dropbox (University of Michigan)/Flu_bottleneck_Flutes_RV
 path_to_flutes_meta <- "~/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Flutes/Vanderbilt_metadata_all_years.csv"
 pathTo19SpecimenKeyForSequenced <- "/Users/katykrupinsky/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Flutes/sequencing_ids_metadata_09132022_updated.csv"
 pathTo1718SpecimenKeyForSequenced <- '/Users/katykrupinsky/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Flutes/sequencing_ids_metadata_11042020.csv'
-pathToPassCoverageRvtn <- '/Users/katykrupinsky/git/FluTES_bottleneck/03 - Input/pass_coverage_rvtn.csv'
-pathToPassCoverageFlutes <- '/Users/katykrupinsky/git/FluTES_bottleneck/03 - Input/pass_coverage_flutes.csv'
+pathToPassCoverageRvtn <- "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/pass_coverage_rvtn.csv"
+pathToPassCoverageFlutes <- "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/pass_coverage_flutes.csv"
 
 # 1. Determine which ones we have sequences for --------------------------------
 

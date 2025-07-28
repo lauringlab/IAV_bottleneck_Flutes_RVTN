@@ -28,7 +28,7 @@ createUnifiedConsensusDataTrimmed <- function() {
     for (i in 1:length(samples)) {
       sample <- samples[i]
       
-      temp <- read.fasta(
+      temp <- phylotools::read.fasta(
         paste(
           "/Users/katykrupinsky/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Consensus_sequence/segmentFasta/trimmed",
           country,

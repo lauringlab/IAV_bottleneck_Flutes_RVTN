@@ -43,25 +43,24 @@ library(reshape2)
 library(nbclonal)
 library(parallel)
 library(tidyverse)
-source("~/git/FluTES_bottleneck/06 - Clonal Method Code/01 - Functions/determineMaxLLBottleneck.R")
+source("~/git/FluTES_bottleneck/01 - Functions/determineMaxLLBottleneck.R")
 
 # clonal_mut_all <- read_csv("/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/Clonal_data/clonal_mut_all.csv")
 
-
 # 1. Create the probability matrix used within the bottleneck calculation ------
 
-listClonal <- list_clonal(
-  n_values = 1:8,
-  R0 = 11.1,
-  mu_values = seq(0.01, 5.01, by = 0.01),
-  maxMuGen = 50,
-  maxFS = 50,
-  clonal = 5
-)
+# listClonal <- list_clonal(
+#   n_values = 1:8,
+#   R0 = 11.1,
+#   mu_values = seq(0.01, 5.01, by = 0.01),
+#   maxMuGen = 50,
+#   maxFS = 50,
+#   clonal = 5
+# )
+# 
+# saveRDS(listClonal, file = "/Users/katykrupinsky/git/FluTES_bottleneck/06 - Clonal Method Code/03 - Input/listClonal_5mutations.rds")
 
-saveRDS(listClonal, file = "/Users/katykrupinsky/git/FluTES_bottleneck/06 - Clonal Method Code/03 - Input/listClonal_5mutations.rds")
-
-listClonal <- readRDS("/Users/katykrupinsky/git/FluTES_bottleneck/06 - Clonal Method Code/03 - Input/listClonal_5mutations.rds")
+listClonal <- readRDS("/Users/katykrupinsky/git/FluTES_bottleneck/03 - Input/listClonal_5mutations.rds")
 
 # 2. Determine the actual bottleneck size --------------------------------------
 bottlenecks <- list()
