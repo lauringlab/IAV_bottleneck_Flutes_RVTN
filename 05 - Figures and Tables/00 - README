@@ -14,10 +14,10 @@ Table 1: table1.R
 
 Figure 1: figure1.R
 	plotReplicateSnv.R
-  plotISnvDistribution.R
-  plotMutationTypeDensity.R
+	plotISnvDistribution.R
+  	plotMutationTypeDensity.R
 
-  sample_data_with_meta.txt
+  	sample_data_with_meta.txt
 
 Table 2: table2.R
 	makePairTable.R

@@ -1,5 +1,5 @@
 ## -----------------------------------------------------------------------------
-## Title: Supplemental Figure 3 - Onset relative to index
+## Title: Supplemental Figure 4 - Onset relative to index
 ## Author: Katy Krupinsky
 ## Last Updated: 04/09/25
 ## -----------------------------------------------------------------------------

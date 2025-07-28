@@ -1,5 +1,5 @@
 ## -----------------------------------------------------------------------------
-## Title: Supplemental Figure 1 - Pairing scheme and phylogenetic trees
+## Title: Supplemental Figure 1 - Phylogenetic trees
 ## Author: Katy Krupinsky
 ## Last Updated: 04/24/25
 ## -----------------------------------------------------------------------------
@@ -21,10 +21,7 @@ pathToMeta <- "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bott
 pathToPair <- "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/pair_meta.txt"
 
 # 1. Create plots --------------------------------------------------------------
-
-### a is a Biorender figure ###
-
-b <- makeTree(
+a <- makeTree(
   pathToMeta = pathToMeta,
   strain_int = "Mighigan_H1N1_2017",
   pathToTreeFile = pathToMichigan2017Tree,
@@ -32,13 +29,15 @@ b <- makeTree(
   scale_pos = 5.3
 )
 
-ggsave(plot = b,
-       filename = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/01 - figures/00 - input/suppfig2/suppfig2_b.png",
-       width = 9,
-       height = 2,
-       bg = "white")
+ggsave(
+  plot = a,
+  filename = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/01 - figures/00 - input/suppfig2/suppfig2_a.png",
+  width = 9,
+  height = 2,
+  bg = "white"
+)
 
-c <- makeTree(
+b <- makeTree(
   pathToMeta = pathToMeta,
   strain_int = "Singapore_H3N2_2018",
   pathToTreeFile = pathToSingapore2018Tree,
@@ -46,13 +45,15 @@ c <- makeTree(
   scale_pos = 35
 )
 
-ggsave(plot = c,
-       filename = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/01 - figures/00 - input/suppfig2/suppfig2_c.png",
-       width = 10,
-       height = 8,
-       bg = "white")
+ggsave(
+  plot = b,
+  filename = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/01 - figures/00 - input/suppfig2/suppfig2_b.png",
+  width = 10,
+  height = 8,
+  bg = "white"
+)
 
-d <- makeTree(
+c <- makeTree(
   pathToMeta = pathToMeta,
   strain_int = "Brisbane_H1N1_2019",
   pathToTreeFile = pathToBrisbane2019Tree,
@@ -60,13 +61,15 @@ d <- makeTree(
   scale_pos = 25
 )
 
-ggsave(plot = d,
-       filename = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/01 - figures/00 - input/suppfig2/suppfig2_d.png",
-       width = 9,
-       height = 6,
-       bg = "white")
+ggsave(
+  plot = c,
+  filename = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/01 - figures/00 - input/suppfig2/suppfig2_c.png",
+  width = 9,
+  height = 6,
+  bg = "white"
+)
 
-e <- makeTree(
+d <- makeTree(
   pathToMeta = pathToMeta,
   strain_int = "Darwin_H3N2_2021",
   pathToTreeFile = pathToDarwin2021Tree,
@@ -74,12 +77,12 @@ e <- makeTree(
   scale_pos = 35
 )
 
-ggsave(plot = e,
-       filename = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/01 - figures/00 - input/suppfig2/suppfig2_e.png",
-       width = 9,
-       height = 13,
-       bg = "white")
+ggsave(
+  plot = d,
+  filename = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/01 - figures/00 - input/suppfig2/suppfig2_d.png",
+  width = 9,
+  height = 13,
+  bg = "white"
+)
 
 ### Paneled together using illustrator ###
-
-
