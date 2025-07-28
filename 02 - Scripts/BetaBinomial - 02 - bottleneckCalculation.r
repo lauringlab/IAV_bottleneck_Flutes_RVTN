@@ -1,16 +1,20 @@
+## Title: Bottleneck Calculation by Pair using Beta-Binomial Model
+## Date Last Modified: 07/28/25
+## Description: This code takes the output produced by 
+## "BetaBinomial - 01 - dataSetup.R" and calculates the pair-wise bottlenecks. 
+## -----------------------------------------------------------------------------
 library(tidyverse)
 library(argparse)
+library(seqinr)
+setwd("/Users/katykrupinsky/git/FluTES_bottleneck")
 
 # 0. Setup ---------------------------------------------------------------------
 ### Bring in functions ###
-file.sources = list.files(
-  c("./01 - Functions/bottleneckCalculation_111124"),
-  pattern = "*.R$",
-  full.names = TRUE,
-  ignore.case = TRUE
-)
-sapply(file.sources, source, .GlobalEnv)
-rm(file.sources)
+
+source("./01 - Functions/handleCommandLineArgs.R")
+source("./01 - Functions/LL_func_approx.R")
+source("./01 - Functions/Log_Beta_Binom.R")
+source("./01 - Functions/warningMessage.R")
 
 ### Setup importing of pairs iSNVs ###
 files <- list.files('/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/00 - pairDataforCalculation/') %>%
@@ -38,24 +42,25 @@ confidence <- data.frame(
 warnings <- tibble()
 ll_out <- list()
 
+# 1. Bottleneck Calculation ----------------------------------------------------
 ### Begin loop ###
 for (p in 1:max(pairs)) {
   filename <- paste('/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/00 - pairDataforCalculation/',
                     paste(paste("pair", p, sep = "_"), ".txt", sep = ""),
                     sep = "")
   
-  # Handle command line arguments ------------------------------------------------
+  # Handle command line arguments ----------------------------------------------
   args <- handleCommandLineArgs (
     filename = filename,
     plot_bool = FALSE,
-    var_thresh = 0.005,
+    var_thresh = 0.005, 
     nb_min = 1,
     nb_max = 200,
     nb_increment = 1,
     conf_level = 0.95
   )
   
-  # Create necessary variables and data frames -----------------------------------
+  # Create necessary variables and data frames ---------------------------------
   var_calling_threshold  <- args$var_calling_threshold
   Nb_min <- args$Nb_min
   if (Nb_min < 1) {
@@ -159,7 +164,7 @@ for (p in 1:max(pairs)) {
 
 rm(list = setdiff(ls(), c("confidence", "ll_out", "num_vars", "warnings")))
 
-# Export everything to files ---------------------------------------------------
+# 2. Export everything to files ------------------------------------------------
 
 write.table(num_vars,
             file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/01 - Output/num_vars.txt",

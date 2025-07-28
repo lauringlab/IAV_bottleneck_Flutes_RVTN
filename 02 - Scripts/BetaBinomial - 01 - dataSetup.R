@@ -1,5 +1,5 @@
 ## Title: Creation of Input Files for Bottleneck Calculations
-## Date Last Modified: 11/04/24
+## Date Last Modified: 07/28/25
 ## Description: This code takes the  metadata files provided by CDC in and
 ## merges them with the SNV data created by the lab. It then will pull consensus
 ## sequence data for all seasons and add it to the  data frame. Finally, it
@@ -26,8 +26,8 @@ path_to_rvtn_snv <- "~/Dropbox (University of Michigan)/Flu_bottleneck_Flutes_RV
 path_to_flutes_meta <- "~/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Flutes/Vanderbilt_metadata_all_years.csv"
 pathTo19SpecimenKeyForSequenced <- "/Users/katykrupinsky/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Flutes/sequencing_ids_metadata_09132022_updated.csv"
 pathTo1718SpecimenKeyForSequenced <- '/Users/katykrupinsky/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Flutes/sequencing_ids_metadata_11042020.csv'
-pathToPassCoverageRvtn <- '/Users/katykrupinsky/git/FluTES_bottleneck/03 - Input/pass_coverage_RVTN.csv'
-pathToPassCoverageFlutes <- '/Users/katykrupinsky/git/FluTES_bottleneck/03 - Input/Pass_coverage_FluTES.csv'
+pathToPassCoverageRvtn <- "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/pass_coverage_rvtn.csv"
+pathToPassCoverageFlutes <- "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/pass_coverage_flutes.csv"
 
 # 1. Determine which ones we have sequences for --------------------------------
 
@@ -171,6 +171,9 @@ write.table(
 )
 
 # 7. Create input for bottleneck calculation -----------------------------------
+### NOTE: For input into the beta-binoial model, 0 values are not tolerated. To
+### account for this, we take the inverse of each of the values. 
+
 list2 <- generateBottleneckInput(final_pairs, df, save = TRUE)
 
 all_snv <- bind_rows(list2)
