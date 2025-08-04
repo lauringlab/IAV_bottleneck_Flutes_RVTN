@@ -18,26 +18,25 @@ source(
 source("~/git/FluTES_bottleneck/01 - Functions/findCI.R")
 
 # 1. Format data ---------------------------------------------------------------
-isnv_pair <- read.table(
-  "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/pair_meta.txt",
-  header = TRUE
-) %>%
-  # Remove the pairs that were removed from the dataset due to no iSNVs
-  filter(pair_id != 55 & pair_id != 62 & pair_id != 63)
+nonzero_pairs <- read.table("./04 - Output/iSNV_data/01 - Output/num_vars.txt", header = TRUE) %>%
+  dplyr::filter(n_variants != 0) %>%
+  dplyr::select(pair) %>%
+  as_vector()
 
-clonal_pair <- read.table(
-  "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/Clonal_data/clonal_dist_with_meta.txt",
-  header = TRUE
-)
+isnv_pair <- read.table("./04 - Output/iSNV_data/pair_meta.txt", header = TRUE) %>%
+  dplyr::filter(pair_id %in% nonzero_pairs)
+
+clonal_pair <- read.table("./04 - Output/Clonal_data/clonal_dist_with_meta.txt",
+                          header = TRUE)
 
 isnvData <- calculateBottleneckByMetadata(
-  pathToConfidenceInterval = '/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/01 - Output/confidence_int.txt',
-  pathToLogLikelihood = '/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/01 - Output/logLikelihood.txt',
-  pathToNumVars = '/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/01 - Output/num_vars.txt',
-  pathToPairMeta = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/pair_meta.txt"
+  pathToConfidenceInterval = './04 - Output/iSNV_data/01 - Output/confidence_int.txt',
+  pathToLogLikelihood = './04 - Output/iSNV_data/01 - Output/logLikelihood.txt',
+  pathToNumVars = './04 - Output/iSNV_data/01 - Output/num_vars.txt',
+  pathToPairMeta = "./04 - Output//iSNV_data/pair_meta.txt"
 )
 
-clonalData <- formatClonalDataForPlotting(pathToOutput = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/Clonal_data/clonal_mut_all_threshhold_trimmed.csv",
+clonalData <- formatClonalDataForPlotting(pathToOutput = "./04 - Output/Clonal_data/clonal_mut_all_threshhold_trimmed.csv",
                                           isnv_pair = isnv_pair,
                                           clonal_pair = clonal_pair) %>%
   na.omit()
@@ -46,9 +45,15 @@ clonalData <- formatClonalDataForPlotting(pathToOutput = "/Users/katykrupinsky/D
 # 2. Create plot ---------------------------------------------------------------
 p <- plotBottleneckSizeByMetadataBars_bothMethods(isnvData = isnvData, clonalData = clonalData)
 
-ggsave(
-  filename = '/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/01 - figures/fig3.png',
-  plot = p,
-  width = 15,
-  height = 8
-)
+save <- FALSE
+
+if (save) {
+  ggsave(
+    filename = '/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/01 - figures/fig3.png',
+    plot = p,
+    width = 15,
+    height = 8
+  )
+}
+
+rm(list = setdiff(ls(), c()))

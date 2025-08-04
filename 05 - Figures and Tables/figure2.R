@@ -12,9 +12,9 @@ library(dplyr)
 source("~/git/FluTES_bottleneck/01 - Functions/plotTvPlot.R")
 source("~/git/FluTES_bottleneck/01 - Functions/plotClonalDistribution.R")
 
-pair_tv <- read.table("/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/pairsnv_tv.txt",
+pair_tv <- read.table("./04 - Output/iSNV_data/pairsnv_tv.txt",
                       header = TRUE)
-pair_clonal <- read.table("/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/Clonal_data/clonal_dist_with_meta.txt",
+pair_clonal <- read.table("./04 - Output/Clonal_data/clonal_dist_with_meta.txt",
                           header = TRUE)
 
 # 1. Create plot ---------------------------------------------------------------
@@ -23,7 +23,13 @@ b <- plotClonalDistribution(pair_clonal)
 
 fig2 <- a + b + plot_annotation(tag_levels = "A")
 
+save <- FALSE
+
+if(save){
 ggsave(plot = fig2,
        filename = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/01 - figures/fig2.png",
        width = 13,
        height = 5)
+}
+
+rm(list = setdiff(ls(), c()))

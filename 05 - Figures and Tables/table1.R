@@ -5,7 +5,7 @@
 ## -----------------------------------------------------------------------------
 
 # 0. Load libraries and import data --------------------------------------------
-isnv_data <- read.table("/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/sample_data_with_meta.txt",
+isnv_data <- read.table("./04 - Output/iSNV_data/sample_data_with_meta.txt",
                  header = TRUE)
 
 source("~/git/FluTES_bottleneck/01 - Functions/createIndMetaTable.R")
