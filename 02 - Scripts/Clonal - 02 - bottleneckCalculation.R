@@ -43,24 +43,32 @@ library(reshape2)
 library(nbclonal)
 library(parallel)
 library(tidyverse)
+
 source("~/git/FluTES_bottleneck/01 - Functions/determineMaxLLBottleneck.R")
 
-# clonal_mut_all <- read_csv("/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/Clonal_data/clonal_mut_all.csv")
+clonal_mut_all <- read_csv("./04 - Output/Clonal_data/clonal_mut_all.csv")
 
 # 1. Create the probability matrix used within the bottleneck calculation ------
-
-# listClonal <- list_clonal(
-#   n_values = 1:8,
-#   R0 = 11.1,
-#   mu_values = seq(0.01, 5.01, by = 0.01),
-#   maxMuGen = 50,
-#   maxFS = 50,
-#   clonal = 5
-# )
 # 
-# saveRDS(listClonal, file = "/Users/katykrupinsky/git/FluTES_bottleneck/06 - Clonal Method Code/03 - Input/listClonal_5mutations.rds")
+# NOTE: For the published analysis, there were at maximum 5 clonal mutations per
+# pair. In this case, there is a loadable output file of the list_clonal()
+# function. If another data source is input, a new list_clonal() output file
+# will be generated each time. 
 
-listClonal <- readRDS("/Users/katykrupinsky/git/FluTES_bottleneck/03 - Input/listClonal_5mutations.rds")
+if(max(clonal_mut_all$clonalMu) == 5) {
+  listClonal <- readRDS(
+    "/Users/katykrupinsky/git/FluTES_bottleneck/03 - Input/listClonal_5mutations.rds"
+  )
+} else {
+  listClonal <- list_clonal(
+    n_values = 1:8,
+    R0 = 11.1,
+    mu_values = seq(0.01, 5.01, by = 0.01),
+    maxMuGen = 50,
+    maxFS = 50,
+    clonal = max(clonal_mut_all$clonalMu)
+  )
+}
 
 # 2. Determine the actual bottleneck size --------------------------------------
 bottlenecks <- list()
@@ -209,5 +217,5 @@ bottlenecks_by_factor_all <- bind_rows(bottlenecks)
 saveOutput <- TRUE
 
 if (saveOutput == TRUE) {
-  write.csv(bottlenecks_by_factor_all, file = '/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/Clonal_data/clonal_mut_all_threshhold_trimmed.csv')
+  write.csv(bottlenecks_by_factor_all, file = './04 - Output/Clonal_data/clonal_mut_all_threshhold_trimmed.csv')
 }

@@ -8,7 +8,6 @@
 ## -----------------------------------------------------------------------------
 library(tidyverse)
 library(seqinr)
-setwd("/Users/katykrupinsky/git/FluTES_bottleneck")
 
 # 0. File paths ----------------------------------------------------------------
 source("./01 - Functions/createClonalDataByCoFactors.R")
@@ -28,8 +27,9 @@ path_to_rvtn_snv <- "~/Dropbox (University of Michigan)/Flu_bottleneck_Flutes_RV
 path_to_flutes_meta <- "~/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Flutes/Vanderbilt_metadata_all_years.csv"
 pathTo19SpecimenKeyForSequenced <- "/Users/katykrupinsky/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Flutes/sequencing_ids_metadata_09132022_updated.csv"
 pathTo1718SpecimenKeyForSequenced <- '/Users/katykrupinsky/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Flutes/sequencing_ids_metadata_11042020.csv'
-pathToPassCoverageRvtn <- "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/pass_coverage_rvtn.csv"
-pathToPassCoverageFlutes <- "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/pass_coverage_flutes.csv"
+
+pathToPassCoverageRvtn <- "./03 - Input/pass_coverage_rvtn.csv"
+pathToPassCoverageFlutes <- "./03 - Input/pass_coverage_flutes.csv"
 
 # 1. Determine which ones we have sequences for --------------------------------
 
@@ -169,7 +169,7 @@ all_sites_pair <- bind_rows(list2)
 
 write.table(
   clonal_dist_with_meta,
-  file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/Clonal_data/clonal_dist_with_meta.txt",
+  file = "./04 - Output/Clonal_data/clonal_dist_with_meta.txt",
   sep = "\t",
   row.names = FALSE,
   col.names = TRUE
@@ -177,7 +177,7 @@ write.table(
 
 write.table(
   all_sites_pair,
-  file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/Clonal_data/all_sites_pair.txt",
+  file = "./04 - Output/Clonal_data/all_sites_pair.txt",
   sep = "\t",
   row.names = FALSE,
   col.names = TRUE
@@ -198,6 +198,6 @@ mutation_matrix <- as.data.frame(table(clonal_dist_with_meta$clonal_diff)) %>%
 clonal_mut_all <- createClonalDataByCoFactors(clonal_dist_with_meta = clonal_dist_with_meta,
                                               saveForPlotting = FALSE)
 
-write_csv(clonal_mut_all, file = '/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/Clonal_data/clonal_mut_all.csv')
+write_csv(clonal_mut_all, file = './04 - Output/Clonal_data/clonal_mut_all.csv')
 
-rm(list = setdiff(ls(), c("clonal_mut_all")))
+rm(list = setdiff(ls(), c()))
