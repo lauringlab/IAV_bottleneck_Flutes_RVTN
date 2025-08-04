@@ -3,7 +3,7 @@ calculateOverallBottleneck <- function(df) {
   
   total_LL <- df %>%
     dplyr::select(bottleneck_size, log_likelihood, n_variants) %>%
-    mutate(log_likelihood = if_else(log_likelihood == "-Inf", NA, log_likelihood)) %>% #TODO: Figure out a little better why this is happening
+    mutate(log_likelihood = if_else(log_likelihood == "-Inf", NA, log_likelihood)) %>%
     mutate(adjusted_LL = (max_num_snps / n_variants) * log_likelihood) %>%
     group_by(bottleneck_size) %>%
     summarise(adjusted_LL = sum(adjusted_LL, na.rm = TRUE))
@@ -17,10 +17,12 @@ calculateOverallBottleneck <- function(df) {
   lower_CI_bottleneck <- min(ci_tibble$bottleneck_size)
   upper_CI_bottleneck <- max(ci_tibble$bottleneck_size)
   
-  out <- tibble(max_LL = Max_LL_bottleneck,
-                lower_CI = lower_CI_bottleneck,
-                upper_CI = upper_CI_bottleneck,
-                sample_size = max(df$pair))
+  out <- tibble(
+    max_LL = Max_LL_bottleneck,
+    lower_CI = lower_CI_bottleneck,
+    upper_CI = upper_CI_bottleneck,
+    sample_size = max(df$pair)
+  )
   return(out)
   
 }

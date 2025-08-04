@@ -24,7 +24,7 @@ setupIndividualBottleneckPlotting <- function(pathToPairMeta = "03 - Input/pair_
         season == 21 ~ "21/22"
       )
     ) %>%
-    filter(max_LL != 999) %>%
+    filter(max_LL != 999) %>% # removes pairs that had no iSNVs going into it
     mutate(age_diff = donor_age - recipient_age) %>%
     mutate(
       age_cat = case_when(

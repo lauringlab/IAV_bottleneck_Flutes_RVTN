@@ -16,7 +16,9 @@ df <- setupOverallBottleneckCalculation(
   pathToConfidenceInt = './04 - Output/iSNV_data/01 - Output/confidence_int.txt',
   pathToLogLikelihood = './04 - Output/iSNV_data/01 - Output/logLikelihood.txt',
   pathToNumVars = './04 - Output/iSNV_data/01 - Output/num_vars.txt'
-)
+) %>%
+  dplyr::filter(n_variants != 0)
+
 bottleneck_meta2 <- setupIndividualBottleneckPlotting(
   pathToPairMeta =  "./04 - Output/iSNV_data/pair_meta.txt",
   pathToPairSnv = "./04 - Output/iSNV_data/pairsnv.txt",
