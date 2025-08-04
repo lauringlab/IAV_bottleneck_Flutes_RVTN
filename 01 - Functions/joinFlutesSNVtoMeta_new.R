@@ -173,10 +173,6 @@ joinFlutesSnvToMeta_new <- function(path_to_flutes_snv,
     dplyr::select(specimen_id) %>% 
     distinct() %>% 
     mutate(isnv = TRUE)
-    
-  trial <- test %>% 
-    left_join(ids_with_isnv)
-  
   
   # 4. Exploratory work to figure out where there are disagreements ------------
   ### Emily B. decision: defer to CDC when there are disagreements
@@ -218,10 +214,6 @@ joinFlutesSnvToMeta_new <- function(path_to_flutes_snv,
     dplyr::rename(collection_date = collection_date.x) %>%
     dplyr::select(-collection_date.y) %>%
     ## Pull out those where either vax status or onset date are listed as different
-    # mutate(
-    #   vax_disagree = ifelse(vax.x != vax.y, TRUE, FALSE),
-    #   onset_disagree = ifelse(onset_date.x != onset_date.y, TRUE, FALSE)
-    # ) %>%
     dplyr::select(-c(onset_date.x, vax.x)) %>% 
     dplyr::rename(onset_date = onset_date.y,
                   vax = vax.y) %>% 

@@ -114,8 +114,6 @@ plotDaysOnsetRelativeToIndex <- function(df) {
       )
     )
   
-  
-  
   ggplot() +
     geom_segment(
       d4,

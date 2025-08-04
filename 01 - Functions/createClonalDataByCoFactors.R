@@ -86,13 +86,13 @@ createClonalDataByCoFactors <- function(clonal_dist_with_meta = clonal_dist_with
   clonal_mut_all <- bind_rows(clonal_mut_all)
   
   if (saveForPlotting == TRUE) {
-    write.csv(clonal_mut_all, file = '/Users/katykrupinsky/git/FluTES_bottleneck/04 - Output/clonal_dist_by_factor.csv')
+    write.csv(clonal_mut_all, file = './04 - Output/clonal_dist_by_factor.csv')
     
     num_in <- clonal_mut_all %>%
       group_by(level) %>%
       summarise(num = sum(freq))
     
-    write.csv(num_in, file = '/Users/katykrupinsky/git/FluTES_bottleneck/04 - Output/clonal_num_samples.csv')
+    write.csv(num_in, file = './04 - Output/clonal_num_samples.csv')
   }
   
   return(clonal_mut_all)

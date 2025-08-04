@@ -1,4 +1,4 @@
-formatClonalDataForPlotting <- function(pathToOutput = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/Clonal_data/clonal_mut_all_threshhold_50edge.csv",
+formatClonalDataForPlotting <- function(pathToOutput = "./04 - Output/Clonal_data/clonal_mut_all_threshhold_trimmed.csv",
                                         isnv_pair,
                                         clonal_pair) {
   clonal_meta <- makePairTable(isnv_pair = isnv_pair, clonal_pair = clonal_pair) %>%

@@ -86,10 +86,6 @@ createIndMetaTable <- function(isnv_ind_samples = isnv_ind_samples) {
     mutate_all(~ replace(., is.na(.), 0)) %>% 
     mutate(across(everything(), as.character))
     
-    
-    
-  
-  
   out <- bind_rows(list) %>% dplyr::select(metric, everything())
   
 }
