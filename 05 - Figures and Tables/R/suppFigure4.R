@@ -33,12 +33,12 @@ bottleneck_matrix <- calculateOverallBottleneck(df)
 ### Generate plots ###
 p <- plotBottleneckWithNumberOfVariants(bottleneck_meta = bottleneck_meta2, bottleneck_matrix = bottleneck_matrix)
 
-save <- FALSE
+save <- TRUE
 
 if (save) {
   ggsave(
     plot = p,
-    filename = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/01 - figures/suppfig4.png",
+    filename = "./05 - Figures and Tables/Rendered/suppfig4.png",
     width = 13,
     height = 8,
     bg = "white"

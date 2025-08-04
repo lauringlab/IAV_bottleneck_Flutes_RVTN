@@ -24,12 +24,12 @@ c <- plotMutationTypeDensity(df)
 
 fig1 <- a / (b + c) + plot_annotation(tag_levels = "A")
 
-save <- FALSE
+save <- TRUE
 
 if(save) {
 ggsave(
   plot = fig1,
-  filename = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/01 - figures/fig1.png",
+  filename = "./05 - Figures and Tables/Rendered/fig1.png",
   width = 13,
   height = 8
 )

@@ -45,11 +45,11 @@ clonalData <- formatClonalDataForPlotting(pathToOutput = "./04 - Output/Clonal_d
 # 2. Create plot ---------------------------------------------------------------
 p <- plotBottleneckSizeByMetadataBars_bothMethods(isnvData = isnvData, clonalData = clonalData)
 
-save <- FALSE
+save <- TRUE
 
 if (save) {
   ggsave(
-    filename = '/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/01 - figures/fig3.png',
+    filename = './05 - Figures and Tables/Rendered/fig3.png',
     plot = p,
     width = 15,
     height = 8
