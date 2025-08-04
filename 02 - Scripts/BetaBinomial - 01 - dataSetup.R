@@ -8,7 +8,6 @@
 ## -----------------------------------------------------------------------------
 library(tidyverse)
 library(seqinr)
-setwd("/Users/katykrupinsky/git/FluTES_bottleneck")
 
 # 0. File paths ----------------------------------------------------------------
 source("./01 - Functions/createUnifiedConsensusData.R")
@@ -28,8 +27,9 @@ path_to_rvtn_snv <- "~/Dropbox (University of Michigan)/Flu_bottleneck_Flutes_RV
 path_to_flutes_meta <- "~/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Flutes/Vanderbilt_metadata_all_years.csv"
 pathTo19SpecimenKeyForSequenced <- "/Users/katykrupinsky/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Flutes/sequencing_ids_metadata_09132022_updated.csv"
 pathTo1718SpecimenKeyForSequenced <- '/Users/katykrupinsky/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Flutes/sequencing_ids_metadata_11042020.csv'
-pathToPassCoverageRvtn <- "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/pass_coverage_rvtn.csv"
-pathToPassCoverageFlutes <- "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/pass_coverage_flutes.csv"
+
+pathToPassCoverageRvtn <- "./03 - Input/pass_coverage_rvtn.csv"
+pathToPassCoverageFlutes <- "./03 - Input/pass_coverage_flutes.csv"
 
 # 1. Determine which ones we have sequences for --------------------------------
 
@@ -107,7 +107,7 @@ final_pairs <- determineTransmissionPairs2(df)
 # 6. Create input for plotting script ------------------------------------------
 write.table(
   df,
-  file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/sample_data_with_meta.txt",
+  file = "./04 - Output/iSNV_data/sample_data_with_meta.txt",
   sep = "\t",
   row.names = FALSE,
   col.names = TRUE
@@ -137,17 +137,18 @@ pair_meta_out <- final_pairs %>%
 
 write.table(
   pair_meta_out,
-  file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/pair_meta.txt",
+  file = "./04 - Output/iSNV_data/pair_meta.txt",
   sep = "\t",
   row.names = FALSE,
   col.names = TRUE
 )
+
 pairs <- 1:nrow(pair_meta_out) %>%
   data.frame()
 
 write.table(
   pairs,
-  file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/pairs.txt",
+  file = "./04 - Output/iSNV_data/pairs.txt",
   sep = "\t",
   row.names = FALSE,
   col.names = FALSE
@@ -155,7 +156,7 @@ write.table(
 
 write.table(
   df,
-  file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/indsnv.txt",
+  file = "./04 - Output/iSNV_data/indsnv.txt",
   sep = "\t",
   row.names = FALSE,
   col.names = TRUE
@@ -166,7 +167,7 @@ tvPlotInput <- bind_rows(list_tv)
 
 write.table(
   tvPlotInput,
-  file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/pairsnv_tv.txt",
+  file = "./04 - Output/iSNV_data/pairsnv_tv.txt",
   sep = "\t",
   row.names = FALSE,
   col.names = TRUE
@@ -176,12 +177,12 @@ write.table(
 ### NOTE: For input into the beta-binomial model, 0 values are not tolerated. To
 ### account for this, we take the inverse of each of the values. 
 
-list2 <- generateBottleneckInput(final_pairs, df, save = TRUE)
+list2 <- generateBottleneckInput(final_pairs, df, save_loc = "./04 - Output/iSNV_data/00 - pairDataforCalculation/", save = TRUE)
 
 all_snv <- bind_rows(list2)
 write.table(
   all_snv,
-  file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/pairsnv.txt",
+  file = "./04 - Output/iSNV_data/pairsnv.txt",
   sep = "\t",
   row.names = FALSE,
   col.names = TRUE

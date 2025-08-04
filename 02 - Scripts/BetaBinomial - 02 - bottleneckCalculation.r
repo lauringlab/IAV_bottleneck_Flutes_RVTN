@@ -6,7 +6,6 @@
 library(tidyverse)
 library(argparse)
 library(seqinr)
-setwd("/Users/katykrupinsky/git/FluTES_bottleneck")
 
 # 0. Setup ---------------------------------------------------------------------
 ### Bring in functions ###
@@ -17,7 +16,7 @@ source("./01 - Functions/Log_Beta_Binom.R")
 source("./01 - Functions/warningMessage.R")
 
 ### Setup importing of pairs iSNVs ###
-files <- list.files('/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/00 - pairDataforCalculation/') %>%
+files <- list.files('./04 - Output/iSNV_data/00 - pairDataforCalculation/') %>%
   data.frame() %>%
   mutate(
     pair = str_replace(., "pair_", ""),
@@ -45,7 +44,7 @@ ll_out <- list()
 # 1. Bottleneck Calculation ----------------------------------------------------
 ### Begin loop ###
 for (p in 1:max(pairs)) {
-  filename <- paste('/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/00 - pairDataforCalculation/',
+  filename <- paste('./04 - Output/iSNV_data/00 - pairDataforCalculation/',
                     paste(paste("pair", p, sep = "_"), ".txt", sep = ""),
                     sep = "")
   
@@ -167,18 +166,18 @@ rm(list = setdiff(ls(), c("confidence", "ll_out", "num_vars", "warnings")))
 # 2. Export everything to files ------------------------------------------------
 
 write.table(num_vars,
-            file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/01 - Output/num_vars.txt",
+            file = "./04 - Output/iSNV_data/01 - Output/num_vars.txt",
             sep = "\t",
             row.names = FALSE)
 write.table(confidence,
-            file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/01 - Output/confidence_int.txt",
+            file = "./04 - Output/iSNV_data/01 - Output/confidence_int.txt",
             sep = "\t",
             row.names = FALSE)
 write.table(warnings,
-            file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/01 - Output/warnings.txt",
+            file = "./04 - Output/iSNV_data/01 - Output/warnings.txt",
             sep = "\t",
             row.names = FALSE)
 write.table(ll_out %>% bind_rows(),
-            file = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/01 - Output/logLikelihood.txt",
+            file = "./04 - Output/iSNV_data/01 - Output/logLikelihood.txt",
             sep = "\t",
             row.names = FALSE)

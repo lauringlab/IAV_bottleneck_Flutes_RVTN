@@ -1,4 +1,4 @@
-generateBottleneckInput <- function(final_pairs, df, save = FALSE) {
+generateBottleneckInput <- function(final_pairs, df, save_loc = "./04 - Output/iSNV_data/00 - pairDataforCalculation/", save = FALSE) {
   list2 <- list()
   
   for (p in 1:nrow(final_pairs)) {
@@ -100,7 +100,7 @@ generateBottleneckInput <- function(final_pairs, df, save = FALSE) {
       pair_export <- pair_snv %>%
         dplyr::select(donor_freq, recip_freq)
       
-      file_name <- paste("/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/iSNV_data/00 - pairDataforCalculation/",
+      file_name <- paste(save_loc,
                          paste(paste("pair", p, sep = "_"), ".txt", sep = ""),
                          sep = "")
       write.table(
