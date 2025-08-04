@@ -50,7 +50,7 @@ plotBottleneckWithNumberOfVariants <- function(bottleneck_meta2 = bottleneck_met
       expand = c(0, 0)
     ) +
     coord_cartesian(ylim = c(-40, 80)) +
-    labs(y = "  Number of variants used                                 Bottleneck size") +
+    labs(y = "    Number of iSNVs used                                  Bottleneck size") +
     theme_minimal(base_size = 15) +
     theme(
       legend.position = "inside",

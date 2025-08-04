@@ -1,5 +1,7 @@
-formatClonalDataForPlotting <- function(pathToOutput = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/Clonal_data/clonal_mut_all_threshhold_50edge.csv") {
-  clonal_meta <- makePairTable() %>%
+formatClonalDataForPlotting <- function(pathToOutput = "/Users/katykrupinsky/Documents/College/03-UM/Research/Papers/Bottlenecks/Clonal_data/clonal_mut_all_threshhold_50edge.csv",
+                                        isnv_pair,
+                                        clonal_pair) {
+  clonal_meta <- makePairTable(isnv_pair = isnv_pair, clonal_pair = clonal_pair) %>%
     dplyr::select(clonal, metric) %>%
     dplyr::filter(metric != 17 / 18) %>%
     mutate(metric = ifelse(metric == "pairs", "Overall", metric))
