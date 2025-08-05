@@ -152,7 +152,7 @@ determineMaxLLBottleneck <- function(listClonal = listClonal,
     overall_plot <- a + b + c + plot_layout(guides = "collect")
     
     ggsave(
-      filename = "/Users/katykrupinsky/git/FluTES_bottleneck/05 - Figures and Tables/clonal/overall_plot.png",
+      filename = "./05 - Figures and Tables/Rendered/overall_plot.png",
       plot = overall_plot,
       width = 16.9,
       height = 5.65
