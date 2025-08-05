@@ -44,7 +44,7 @@ library(nbclonal)
 library(parallel)
 library(tidyverse)
 
-source("~/git/FluTES_bottleneck/01 - Functions/determineMaxLLBottleneck.R")
+source("./01 - Functions/determineMaxLLBottleneck.R")
 
 clonal_mut_all <- read_csv("./04 - Output/Clonal_data/clonal_mut_all.csv")
 
@@ -57,7 +57,7 @@ clonal_mut_all <- read_csv("./04 - Output/Clonal_data/clonal_mut_all.csv")
 
 if(max(clonal_mut_all$clonalMu) == 5) {
   listClonal <- readRDS(
-    "/Users/katykrupinsky/git/FluTES_bottleneck/03 - Input/listClonal_5mutations.rds"
+    "./03 - Input/listClonal_5mutations.rds"
   )
 } else {
   listClonal <- list_clonal(
