@@ -7,8 +7,8 @@
 # 0. Load libraries and import data --------------------------------------------
 library(tidyverse)
 library(lubridate)
-source("~/git/FluTES_bottleneck/01 - Functions/plotDaysPostSymptomOnset.R")
-source("~/git/FluTES_bottleneck/01 - Functions/plotDaysOnsetRelativeToIndex.R")
+source("./01 - Functions/plotDaysPostSymptomOnset.R")
+source("./01 - Functions/plotDaysOnsetRelativeToIndex.R")
 df <- read.table("./04 - Output/iSNV_data/pair_meta.txt", header = TRUE)
 
 save <- TRUE

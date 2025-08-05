@@ -1,12 +1,14 @@
 createUnifiedConsensusData <- function(includeRvtn = TRUE) {
   # 1. Setup -------------------------------------------------------------------
-  source("01 - Functions/getConsensus.R")
+  source("./01 - Functions/getConsensus.R")
   
-  brisbane_len <- "03 - Input/Brisbane_length_to_add_new.csv"
+  brisbane_len <- "./03 - Input/Brisbane_length_to_add_new.csv"
+  singapore_len <- "./03 - Input/Singapore_length_to_add.csv"
+  
   brisbane_fasta <- "~/Dropbox (University of Michigan)/Flu_bottleneck_Flutes_RVTN/Consensus_sequence/Brisbane_H1N1_2019_aligned.all.consensus.fasta"
-  singapore_len <- "~/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Consensus_sequence/Singapore_length_to_add.csv"
   singapore_fasta <- "~/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Consensus_sequence/Singapore_H3N2_2018.all.consensus_new.fasta"
   darwin_fasta <- "~/Dropbox (University of Michigan)/Flu_bottleneck_Flutes_RVTN/Consensus_sequence/Darwin_H3N2_2021.all.consensus.fasta"
+  
   hongkong_pos <- "~/Dropbox (University of Michigan)/Flu_bottleneck_Flutes_RVTN/Consensus_sequence/HongKong_all.consensus_positions"
   michigan_pos <- "~/Dropbox (University of Michigan)/Flu_bottleneck_Flutes_RVTN/Consensus_sequence/Michigan_H1N1_2017_2018.all.consensus_positions"
   

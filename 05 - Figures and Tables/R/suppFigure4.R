@@ -5,10 +5,10 @@
 ## -----------------------------------------------------------------------------
 
 # 0. Load libraries and functions --------------------------------------------
-source("~/git/FluTES_bottleneck/01 - Functions/setupOverallBottleneckCalculation.R")
-source("~/git/FluTES_bottleneck/01 - Functions/setupIndividualBottleneckPlotting.R")
-source("~/git/FluTES_bottleneck/01 - Functions/calculateOverallBottleneck.R")
-source("~/git/FluTES_bottleneck/01 - Functions/plotBottleneckWithNumberOfVariants.R")
+source("./01 - Functions/setupOverallBottleneckCalculation.R")
+source("./01 - Functions/setupIndividualBottleneckPlotting.R")
+source("./01 - Functions/calculateOverallBottleneck.R")
+source("./01 - Functions/plotBottleneckWithNumberOfVariants.R")
 
 df <- setupOverallBottleneckCalculation(
   pathToPairMeta =  "./04 - Output/iSNV_data/pair_meta.txt",

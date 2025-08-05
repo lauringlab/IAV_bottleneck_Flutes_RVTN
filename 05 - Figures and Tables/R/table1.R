@@ -8,7 +8,7 @@
 isnv_data <- read.table("./04 - Output/iSNV_data/sample_data_with_meta.txt",
                  header = TRUE)
 
-source("~/git/FluTES_bottleneck/01 - Functions/createIndMetaTable.R")
+source("./01 - Functions/createIndMetaTable.R")
 # 1. Create table --------------------------------------------------------------
 isnv_ind_samples <- isnv_data %>% 
   dplyr::select(sample, hhsubid, hhid, site, season, age, sex, vax, strain) %>% 

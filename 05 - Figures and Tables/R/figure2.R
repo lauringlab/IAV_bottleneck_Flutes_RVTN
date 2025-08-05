@@ -9,8 +9,8 @@ library(tidyverse)
 library(patchwork)
 library(dplyr)
 
-source("~/git/FluTES_bottleneck/01 - Functions/plotTvPlot.R")
-source("~/git/FluTES_bottleneck/01 - Functions/plotClonalDistribution.R")
+source("./01 - Functions/plotTvPlot.R")
+source("./01 - Functions/plotClonalDistribution.R")
 
 pair_tv <- read.table("./04 - Output/iSNV_data/pairsnv_tv.txt", header = TRUE)
 pair_clonal <- read.table("./04 - Output/Clonal_data/clonal_dist_with_meta.txt",

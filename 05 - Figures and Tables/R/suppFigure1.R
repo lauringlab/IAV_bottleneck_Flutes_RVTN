@@ -11,7 +11,7 @@ library(PNWColors)
 library(paletteer)
 library(patchwork)
 
-source("~/git/FluTES_bottleneck/01 - Functions/makeTree.R")
+source("./01 - Functions/makeTree.R")
 
 pathToMichigan2017Tree <- './03 - Input/treeData/01 - michigan_2017/aligned_seqs.fasta.treefile'
 pathToSingapore2018Tree <- './03 - Input/treeData/02 - singapore_2018/alignedSequences2.fasta.treefile'

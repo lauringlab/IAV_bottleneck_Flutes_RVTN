@@ -7,15 +7,15 @@
 # 0. Load libraries and import data --------------------------------------------
 library(tidyverse)
 
-source("~/git/FluTES_bottleneck/01 - Functions/calculateBottleneckByMetadata.R")
-source("~/git/FluTES_bottleneck/01 - Functions/calculateBottleneckByLevels.R")
-source("~/git/FluTES_bottleneck/01 - Functions/calculateOverallBottleneck.R")
-source("~/git/FluTES_bottleneck/01 - Functions/formatClonalDataForPlotting.R")
-source("~/git/FluTES_bottleneck/01 - Functions/makePairTable.R")
+source("./01 - Functions/calculateBottleneckByMetadata.R")
+source("./01 - Functions/calculateBottleneckByLevels.R")
+source("./01 - Functions/calculateOverallBottleneck.R")
+source("./01 - Functions/formatClonalDataForPlotting.R")
+source("./01 - Functions/makePairTable.R")
 source(
-  "~/git/FluTES_bottleneck/01 - Functions/plotBottleneckSizeByMetadataBars_bothMethods.R"
+  "./01 - Functions/plotBottleneckSizeByMetadataBars_bothMethods.R"
 )
-source("~/git/FluTES_bottleneck/01 - Functions/findCI.R")
+source("./01 - Functions/findCI.R")
 
 # 1. Format data ---------------------------------------------------------------
 nonzero_pairs <- read.table("./04 - Output/iSNV_data/01 - Output/num_vars.txt", header = TRUE) %>%

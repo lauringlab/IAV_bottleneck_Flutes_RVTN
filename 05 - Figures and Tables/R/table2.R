@@ -5,7 +5,7 @@
 ## -----------------------------------------------------------------------------
 
 # 0. Load libraries and import data --------------------------------------------
-source("~/git/FluTES_bottleneck/01 - Functions/makePairTable.R")
+source("./01 - Functions/makePairTable.R")
 
 nonzero_pairs <- read.table("./04 - Output/iSNV_data/01 - Output/num_vars.txt", header = TRUE) %>%
   dplyr::filter(n_variants != 0) %>%
