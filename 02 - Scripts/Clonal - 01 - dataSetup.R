@@ -25,6 +25,7 @@ path_to_ddlabdat <- "/Users/katykrupinsky/University of Michigan Dropbox/Katy Kr
 path_to_flutes_snv <- "~/Dropbox (University of Michigan)/Flu_bottleneck_Flutes_RVTN/Flutes/SNV_with_meta_data.csv"
 path_to_rvtn_snv <- "~/Dropbox (University of Michigan)/Flu_bottleneck_Flutes_RVTN/RVTN/SNV_with_mutation_type.csv"
 path_to_flutes_meta <- "~/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Flutes/Vanderbilt_metadata_all_years.csv"
+
 pathTo19SpecimenKeyForSequenced <- "/Users/katykrupinsky/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Flutes/sequencing_ids_metadata_09132022_updated.csv"
 pathTo1718SpecimenKeyForSequenced <- '/Users/katykrupinsky/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Flutes/sequencing_ids_metadata_11042020.csv'
 
