@@ -102,7 +102,7 @@ joinFlutesSnvToMeta_new <- function(path_to_flutes_snv,
   
   # 2. Format metadata (CDC) ---------------------------------------------------
   fulldat <- read.csv(path_to_fulldat)
-  
+
   fulldat2 <- fulldat %>%
     dplyr::select(
       cdc_studyid,
@@ -114,7 +114,7 @@ joinFlutesSnvToMeta_new <- function(path_to_flutes_snv,
       sex,
       cdc_flu_vx
     )
-  
+
   ddlabdat <- read.csv(path_to_ddlabdat)
   
   ddlabdat2 <- ddlabdat %>%
@@ -146,7 +146,7 @@ joinFlutesSnvToMeta_new <- function(path_to_flutes_snv,
       vax,
       onset_date,
       collection_date
-    ) %>% 
+    ) %>%
     dplyr::rename(site = cdc_site)
   
   # 3. Join metadata and snv data ----------------------------------------------
@@ -175,7 +175,6 @@ joinFlutesSnvToMeta_new <- function(path_to_flutes_snv,
     mutate(isnv = TRUE)
   
   # 4. Exploratory work to figure out where there are disagreements ------------
-  ### Emily B. decision: defer to CDC when there are disagreements
   flutes_unified_sequenced <- flutes_unified2 %>%
     ## Only keep those that are sequenced
     full_join(test, by = c("specimen_id")) %>%
