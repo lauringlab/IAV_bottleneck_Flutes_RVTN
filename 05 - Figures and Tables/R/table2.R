@@ -3,6 +3,7 @@
 ## Author: Katy Krupinsky
 ## Last Updated: 04/07/25
 ## -----------------------------------------------------------------------------
+library(tidyverse)
 
 # 0. Load libraries and import data --------------------------------------------
 source("./01 - Functions/makePairTable.R")
