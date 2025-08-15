@@ -10,7 +10,7 @@ library(tidyverse)
 library(seqinr)
 
 # 0. File paths ----------------------------------------------------------------
-source("./01 - Functions/createUnifiedConsensusData.R")
+source("./01 - Functions/createUnifiedConsensusDataTrimmed.R")
 source("./01 - Functions/joinFlutesSnvToMeta_new.R")
 source("./01 - Functions/joinRvtnSnvToMeta_new.R")
 source("./01 - Functions/getRvtnMetadata.R")
@@ -19,23 +19,22 @@ source("./01 - Functions/determineTransmissionPairs2.R")
 source("./01 - Functions/generateTvPlotInput.R")
 source("./01 - Functions/generateBottleneckInput.R")
 
+path_to_fulldat <- "./03 - Input/fulldat_min.csv"
+path_to_ddlabdat <- "./03 - Input/ddlabdat_min.csv"
+path_to_flutes_snv <- "./03 - Input/flutes_snv_min.csv"
+path_to_rvtn_snv <- "./03 - Input/rvtn_snv_min.csv"
+path_to_flutes_meta <- "./03 - Input/Vanderbilt_metadata_all_years.csv"
 
-path_to_fulldat <- "/Users/katykrupinsky/University of Michigan Dropbox/Katy Krupinsky/CDC_RVTN_FLUTES_Flu/CDC_RVTN_FLUTES_Flu_2/fulldat_lauring_flu2023-12-07.csv"
-path_to_ddlabdat <- "/Users/katykrupinsky/University of Michigan Dropbox/Katy Krupinsky/CDC_RVTN_FLUTES_Flu/CDC_RVTN_FLUTES_Flu_2/ddlabdat_lauring_flu2023-12-07.csv"
-path_to_flutes_snv <- "~/Dropbox (University of Michigan)/Flu_bottleneck_Flutes_RVTN/Flutes/SNV_with_meta_data.csv"
-path_to_rvtn_snv <- "~/Dropbox (University of Michigan)/Flu_bottleneck_Flutes_RVTN/RVTN/SNV_with_mutation_type.csv"
-path_to_flutes_meta <- "~/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Flutes/Vanderbilt_metadata_all_years.csv"
-
-pathTo19SpecimenKeyForSequenced <- "/Users/katykrupinsky/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Flutes/sequencing_ids_metadata_09132022_updated.csv"
-pathTo1718SpecimenKeyForSequenced <- '/Users/katykrupinsky/University of Michigan Dropbox/Katy Krupinsky/Flu_bottleneck_Flutes_RVTN/Flutes/sequencing_ids_metadata_11042020.csv'
+pathTo19SpecimenKeyForSequenced <- "./03 - Input/sequencing_ids_metadata_19_min.csv"
+pathTo1718SpecimenKeyForSequenced <- './03 - Input/sequencing_ids_metadata_1718_min.csv'
 
 pathToPassCoverageRvtn <- "./03 - Input/pass_coverage_rvtn.csv"
 pathToPassCoverageFlutes <- "./03 - Input/pass_coverage_flutes.csv"
 
 # 1. Determine which ones we have sequences for --------------------------------
 
-all_cons <- createUnifiedConsensusData() %>%
-  dplyr::rename(region = REGION, pos = POS, cons = CONS)
+all_cons <- createUnifiedConsensusDataTrimmed() %>%
+  mutate(sample = as.numeric(sample))
 
 sequenced_ids_df <- all_cons %>%
   ungroup() %>%
