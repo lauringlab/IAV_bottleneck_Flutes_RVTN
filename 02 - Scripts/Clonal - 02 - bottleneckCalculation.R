@@ -217,5 +217,5 @@ bottlenecks_by_factor_all <- bind_rows(bottlenecks)
 saveOutput <- TRUE
 
 if (saveOutput == TRUE) {
-  write.csv(bottlenecks_by_factor_all, file = './04 - Output/Clonal_data/clonal_mut_all_threshhold_trimmed.csv')
+  write.csv(bottlenecks_by_factor_all, file = './04 - Output/Clonal_data/clonal_mut_all_threshhold.csv')
 }
