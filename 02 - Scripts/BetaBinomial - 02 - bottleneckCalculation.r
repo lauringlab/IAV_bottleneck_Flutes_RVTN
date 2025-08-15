@@ -181,3 +181,5 @@ write.table(ll_out %>% bind_rows(),
             file = "./04 - Output/iSNV_data/01 - Output/logLikelihood.txt",
             sep = "\t",
             row.names = FALSE)
+
+rm(list = setdiff(ls(), c()))
