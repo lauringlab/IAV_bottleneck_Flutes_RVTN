@@ -89,7 +89,7 @@ df2 <- cleanUnifiedDataset(df, filter = TRUE, nSnvFilterThresh = 50)
 # 4. Create transmission pairs -------------------------------------------------
 final_pairs <- determineTransmissionPairs_clonal(df2)
 
-#5. Combine with consensus and iSNV information and get the number of
+# 5. Combine with consensus and iSNV information and get the number of
 #   clonal mutations -----------------------------------------------------------
 list <- list()
 list2 <- list()
