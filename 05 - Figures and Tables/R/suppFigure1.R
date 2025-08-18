@@ -25,7 +25,7 @@ save <- TRUE
 # 1. Create plots --------------------------------------------------------------
 a <- makeTree(
   pathToMeta = pathToMeta,
-  strain_int = "Mighigan_H1N1_2017",
+  strain_int = "Michigan_H1N1_2017",
   pathToTreeFile = pathToMichigan2017Tree,
   pathToPair = pathToPair,
   scale_pos = 5.3
