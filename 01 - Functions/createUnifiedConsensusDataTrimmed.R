@@ -45,7 +45,6 @@ createUnifiedConsensusDataTrimmed <- function() {
         filter(cons != "") %>%
         ungroup() %>%
         mutate(start = as.numeric(str_extract(segment, "(?<=:)[0-9]{1,2}(?=-)"))) %>%
-        mutate(start = ifelse(is.na(start), 1, start)) %>% 
         group_by(region) %>%
         mutate(pos_raw = row_number()) %>%
         mutate(pos = pos_raw + (start - 1)) %>%
