@@ -40,12 +40,10 @@ sequenced_ids_df <- all_cons %>%
   ungroup() %>%
   dplyr::select(sample, strain) %>%
   distinct() %>%
-  mutate(sequenced = TRUE) %>%
-  na.omit()
+  mutate(sequenced = TRUE)
 
 # Filter for only ones that passed
 flutes <- read_csv(pathToPassCoverageFlutes) %>%
-  na.omit() %>%
   filter(sample != "Water") %>%
   mutate(sample = as.numeric(sample))
 rvtn <- read_csv(pathToPassCoverageRvtn)
