@@ -6,7 +6,7 @@ joinFlutesSnvToMeta_new <- function(path_to_flutes_snv,
                                 pathTo19SpecimenKeyForSequenced,
                                 ctThresh = 30,
                                 sequenced_ids_df = sequenced_ids_df) {
-  # 1. Determine the specimenID for each of the samples ------------------------
+  # 0. Determine the specimenID for each of the samples ------------------------
   
   flutes_sequenced_ids <- sequenced_ids_df %>%
     filter(str_detect(as.character(sample), "^17|^18|^19"))
@@ -22,7 +22,7 @@ joinFlutesSnvToMeta_new <- function(path_to_flutes_snv,
   flutes_sequenced_meta <- bind_rows(flutes_1718_sequenced_meta, flutes_19_sequenced_meta) %>%
     mutate(has_specimen_id = TRUE)
   
-  test <- full_join(sequenced_ids_df, flutes_sequenced_meta) %>%
+  sequenced <- full_join(sequenced_ids_df, flutes_sequenced_meta) %>%
     filter(str_detect(as.character(sample), "^17|^18|^19")) %>%
     filter(sequenced == TRUE)
   
@@ -76,6 +76,7 @@ joinFlutesSnvToMeta_new <- function(path_to_flutes_snv,
       onset_date = ifelse(onset_date == ".", NA, onset_date),
       collection_date = mdy(collection_date),
       onset_date = mdy(onset_date),
+      # re-leveling to ensure consistency across data sets
       sex = ifelse(sex == 0, 1, 2)
     ) %>%
     dplyr::select(
@@ -100,7 +101,7 @@ joinFlutesSnvToMeta_new <- function(path_to_flutes_snv,
       subtype_ct
     )
   
-  # 2. Format metadata (CDC) ---------------------------------------------------
+  # 3. Format metadata (CDC) ---------------------------------------------------
   fulldat <- read.csv(path_to_fulldat)
 
   fulldat2 <- fulldat %>%
@@ -133,6 +134,7 @@ joinFlutesSnvToMeta_new <- function(path_to_flutes_snv,
     mutate(
       vax = ifelse(vax == "Unvaccinated", 0, 1),
       season = as.numeric(str_sub(as.character(season), 1, 2)),
+      # rounding to deal with sig fig issue
       age = floor(age * 100) / 100
     ) %>%
     dplyr::select(
@@ -149,7 +151,7 @@ joinFlutesSnvToMeta_new <- function(path_to_flutes_snv,
     ) %>%
     dplyr::rename(site = cdc_site)
   
-  # 3. Join metadata and snv data ----------------------------------------------
+  # 4. Join metadata and snv data ----------------------------------------------
   flutes_unified <- flutes_snv2 %>%
     full_join(
       flutes_meta2,
@@ -165,19 +167,14 @@ joinFlutesSnvToMeta_new <- function(path_to_flutes_snv,
     ) %>%
     mutate(age = floor(age * 100) / 100)
   
-  ## .x is from snv dataset, .y is from CDC dataset
+  # .x is from snv dataset, .y is from CDC dataset
   flutes_unified2 <- flutes_unified %>%
     full_join(cdc_meta, by = c("age", "sex", "season", "specimen_id"))
   
-  ids_with_isnv <- flutes_snv2 %>% 
-    dplyr::select(specimen_id) %>% 
-    distinct() %>% 
-    mutate(isnv = TRUE)
-  
-  # 4. Exploratory work to figure out where there are disagreements ------------
+  # 5. Resolve disagreements between datasets ----------------------------------
   flutes_unified_sequenced <- flutes_unified2 %>%
     ## Only keep those that are sequenced
-    full_join(test, by = c("specimen_id")) %>%
+    full_join(sequenced, by = c("specimen_id")) %>%
     filter(sequenced == TRUE) %>%
     ## Input the sample ID for those that it is missing
     mutate(sample = ifelse(is.na(sample.x), sample.y, sample.x)) %>%
@@ -189,6 +186,7 @@ joinFlutesSnvToMeta_new <- function(path_to_flutes_snv,
       onset_date.y = as_date(onset_date.y),
       onset_date.x = as_date(onset_date.x)
     ) %>%
+    ## Impute if one of the two is missing
     mutate(
       collection_date.x = ifelse(
         is.na(collection_date.x),
@@ -212,13 +210,11 @@ joinFlutesSnvToMeta_new <- function(path_to_flutes_snv,
     ## Looked and there were no collection date disagreements, so can get rid of the double copies
     dplyr::rename(collection_date = collection_date.x) %>%
     dplyr::select(-collection_date.y) %>%
-    ## Pull out those where either vax status or onset date are listed as different
+    ## Remove excess columns
     dplyr::select(-c(onset_date.x, vax.x)) %>% 
     dplyr::rename(onset_date = onset_date.y,
                   vax = vax.y) %>% 
-    dplyr::select(-c(has_specimen_id)) %>% 
-    # Filtering out that one sample that is missing the metadata
-    filter(!is.na(collection_date))
+    dplyr::select(-c(has_specimen_id))
   
   return(flutes_unified_sequenced)
 }
