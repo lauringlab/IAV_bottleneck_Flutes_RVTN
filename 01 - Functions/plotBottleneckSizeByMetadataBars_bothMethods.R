@@ -103,32 +103,83 @@ plotBottleneckSizeByMetadataBars_bothMethods <- function(isnvData, clonalData) {
       mapping = aes(
         x = level,
         y = -(samples / 20),
-        col = method
+        fill = method,
+        color = method
       ),
-      position = "dodge",
+      position = position_dodge(0.92),
       fill = "grey",
-      lwd = 1
+      width = 0.8,
+      lwd = 0
     ) +
     geom_col(
       df2,
-      mapping = aes(x = level, y = estimate, fill = method),
-      position = "dodge",
-      alpha = 0.5,
-      color = "white",
+      mapping = aes(
+        x = level,
+        y = estimate,
+        fill = method,
+        color = method,
+        alpha = method
+      ),
+      position = position_dodge(0.92),
+      width = 0.8,
+      # alpha = 0.5,
+      lwd = 1
+    ) +
+    geom_errorbar(
+      df2 %>% filter(method == "iSNV" & level != 2),
+      mapping = aes(
+        x = level + 0.22,
+        ymin = lower_CI,
+        ymax = upper_CI
+      ),
+      width = 0.2
+    ) +
+    geom_errorbar(
+      df2 %>% filter(method == "Clonal"),
+      mapping = aes(
+        x = level - 0.22,
+        ymin = lower_CI,
+        ymax = upper_CI
+      ),
+      width = 0.2
+    ) +
+    geom_errorbar(
+      df2 %>% filter(method == "iSNV" &
+                       level == 2),
+      mapping = aes(
+        x = level + 0.22,
+        ymin = 1,
+        ymax = 3.7,
+        width = 0.2
+      )
+    ) +
+    geom_rect(
+      df2 %>% filter(method == "iSNV" & level == 2),
+      mapping = aes(
+        xmin = level + 0.2,
+        xmax = level + 0.4,
+        ymin = 2.2,
+        ymax = 3.5
+      ),
+      fill = "white"
+    ) +
+    geom_segment(
+      df2 %>% filter(method == "iSNV" & level == 2),
+      mapping = aes(x = level + 0.22, y = 2.2, yend = 3.5),
+      lty = 2
+    ) +
+    geom_segment(df2,
+                 mapping = aes(x = 0.5, y = 3.5, yend = 4),
+                 lwd = 1.5) +
+    geom_segment(df2,
+                 mapping = aes(x = 0.5, y = -3.5, yend = 2.2),
+                 lwd = 1.5) +
+    geom_segment(
+      df2,
+      mapping = aes(x = 0.5, y = 2.2, yend = 3.5),
+      lty = 2,
       lwd = 1.5
     ) +
-    geom_errorbar(df2 %>% filter(method == "iSNV" & level != 2),
-                 mapping = aes(x = level + 0.22, ymin = lower_CI, ymax = upper_CI), width = 0.2) +
-    geom_errorbar(df2 %>% filter(method == "Clonal"),
-                  mapping = aes(x = level - 0.22, ymin = lower_CI, ymax = upper_CI), width = 0.2) +
-    geom_errorbar(df2 %>% filter(method == "iSNV" & level == 2), mapping = aes(x = level + 0.22, ymin = 1, ymax = 3.7, width = 0.2)) +
-    geom_rect(df2 %>% filter(method == "iSNV" & level == 2),
-              mapping = aes(xmin = level + 0.2, xmax = level + 0.4, ymin = 2.2, ymax = 3.5), fill = "white") +
-    geom_segment(df2 %>% filter(method == "iSNV" & level == 2),
-              mapping = aes(x = level + 0.22, y = 2.2, yend = 3.5), lty = 2) +
-    geom_segment(df2, mapping = aes(x = 0.5, y = 3.5, yend = 4), lwd = 1.5) +
-    geom_segment(df2, mapping = aes(x = 0.5, y = -3.5, yend = 2.2), lwd = 1.5) +
-    geom_segment(df2, mapping = aes(x = 0.5, y = 2.2, yend = 3.5), lty = 2, lwd = 1.5) +
     geom_hline(yintercept = 0,
                lwd = 1,
                lty = 1) +
@@ -151,8 +202,14 @@ plotBottleneckSizeByMetadataBars_bothMethods <- function(isnvData, clonalData) {
       limits = c(-3.5, 4),
       expand = c(0, 0)
     ) +
-    scale_fill_manual(values = c("#89689d", "#2c6184")) +
-    scale_color_manual(values = c("white", "white")) +
+    scale_fill_manual(values = c("#89689d99", "#2c618499")) +
+    scale_color_manual(values = c("#c4b3ce", "#95b0c1")) +
+    scale_alpha_manual(values = c(0.5, 0.5)) +
+    guides(alpha = guide_legend(override.aes = list(
+      lwd = 0.5,
+      fill = c("#c4b3ce", "#95b0c1"),
+      color = c("white", "white")
+    ))) +
     theme_classic(base_size = 20) +
     labs(y = "        Number of pairs                     Bottleneck size") +
     theme(
