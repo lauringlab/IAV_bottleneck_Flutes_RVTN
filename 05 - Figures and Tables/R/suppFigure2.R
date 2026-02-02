@@ -18,7 +18,7 @@ p <- plotDaysOnsetRelativeToIndex(df)
 if (save) {
   ggsave(
     plot = p,
-    filename = "./05 - Figures and Tables/Rendered/suppfig2.png",
+    filename = "./05 - Figures and Tables/Rendered/suppfig2.tif",
     width = 10,
     height = 12
   )

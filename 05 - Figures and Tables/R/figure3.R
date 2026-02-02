@@ -49,7 +49,7 @@ save <- TRUE
 
 if (save) {
   ggsave(
-    filename = './05 - Figures and Tables/Rendered/fig3.png',
+    filename = './05 - Figures and Tables/Rendered/fig3.tif',
     plot = p,
     width = 15,
     height = 8
