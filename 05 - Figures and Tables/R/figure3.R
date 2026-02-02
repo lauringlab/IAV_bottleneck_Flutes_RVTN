@@ -36,7 +36,7 @@ isnvData <- calculateBottleneckByMetadata(
   pathToPairMeta = "./04 - Output//iSNV_data/pair_meta.txt"
 )
 
-clonalData <- formatClonalDataForPlotting(pathToOutput = "./04 - Output/Clonal_data/clonal_mut_all_threshhold.csv",
+clonalData <- formatClonalDataForPlotting(pathToOutput = "./04 - Output/Clonal_data/clonal_mut_all_new.csv",
                                           isnv_pair = isnv_pair,
                                           clonal_pair = clonal_pair) %>%
   na.omit()

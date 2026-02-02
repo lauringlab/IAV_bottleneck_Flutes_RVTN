@@ -10,13 +10,12 @@ determineMaxLLBottleneck <- function(listClonal = listClonal,
   df_meanNbLL <- LL_meanNb.df(
     df = sample,
     listClonal = listClonal,
-    lambda_values = seq(0.01, 5.00, by = 0.1),
+    lambda_values = seq(0.01, 4, by = 0.02),
     R0 = 11.1,
-    mu_values = seq(0.01, 5.01, by = 0.01),
+    mu_values = seq(0.01, 4, by = 0.01),
     maxMuGen = 50,
     maxFS = 50,
-    maxIni = 8,
-    maxNb = 3
+    maxIni = 8
   )
   
   maxLL_bottleneck <- df_meanNbLL[which(df_meanNbLL$prob == max(df_meanNbLL$prob, na.rm = TRUE)), ]$meanNb

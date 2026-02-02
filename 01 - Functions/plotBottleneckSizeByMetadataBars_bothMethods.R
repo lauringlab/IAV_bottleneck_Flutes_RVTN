@@ -149,7 +149,7 @@ plotBottleneckSizeByMetadataBars_bothMethods <- function(isnvData, clonalData) {
       mapping = aes(
         x = level + 0.22,
         ymin = 1,
-        ymax = 3.7,
+        ymax = 6.7,
         width = 0.2
       )
     ) +
@@ -158,26 +158,26 @@ plotBottleneckSizeByMetadataBars_bothMethods <- function(isnvData, clonalData) {
       mapping = aes(
         xmin = level + 0.2,
         xmax = level + 0.4,
-        ymin = 2.2,
-        ymax = 3.5
+        ymin = 4.5,
+        ymax = 6
       ),
       fill = "white"
     ) +
     geom_segment(
       df2 %>% filter(method == "iSNV" & level == 2),
-      mapping = aes(x = level + 0.22, y = 2.2, yend = 3.5),
-      lty = 2
+      mapping = aes(x = level + 0.22, y = 4.5, yend = 6),
+      lty = 3
     ) +
     geom_segment(df2,
-                 mapping = aes(x = 0.5, y = 3.5, yend = 4),
+                 mapping = aes(x = 0.5, y = 6, yend = 7.5),
                  lwd = 1.5) +
     geom_segment(df2,
-                 mapping = aes(x = 0.5, y = -3.5, yend = 2.2),
+                 mapping = aes(x = 0.5, y = -3.5, yend = 4.5),
                  lwd = 1.5) +
     geom_segment(
       df2,
-      mapping = aes(x = 0.5, y = 2.2, yend = 3.5),
-      lty = 2,
+      mapping = aes(x = 0.5, y = 4.5, yend = 6),
+      lty = 3,
       lwd = 1.5
     ) +
     geom_hline(yintercept = 0,
@@ -187,7 +187,7 @@ plotBottleneckSizeByMetadataBars_bothMethods <- function(isnvData, clonalData) {
                lwd = 1) +
     geom_text(aes(
       x = c(3.5, 6.5, 9.5, 13.5, 17.5),
-      y = rep(2.5, 5),
+      y = rep(5.5, 5),
       label = c("Season", "Subtype", "Age", "Sex", "Vaccination")
     ), size = 7) +
     scale_x_continuous(
@@ -197,9 +197,9 @@ plotBottleneckSizeByMetadataBars_bothMethods <- function(isnvData, clonalData) {
       expand = c(0, 0)
     ) +
     scale_y_continuous(
-      breaks = c(-3.5, -3, -2.5, -2, -1.5, -1, -0.5, 1, 2, 3.7),
-      labels = c(70, 60, 50, 40, 30, 20, 10, 1, 2, 10),
-      limits = c(-3.5, 4),
+      breaks = c(-3.5, -3, -2.5, -2, -1.5, -1, -0.5, 1, 2, 3, 4, 6.7),
+      labels = c(70, 60, 50, 40, 30, 20, 10, 1, 2, 3, 4, 10),
+      limits = c(-3.5, 7.5),
       expand = c(0, 0)
     ) +
     scale_fill_manual(values = c("#89689d99", "#2c618499")) +
@@ -211,7 +211,7 @@ plotBottleneckSizeByMetadataBars_bothMethods <- function(isnvData, clonalData) {
       color = c("white", "white")
     ))) +
     theme_classic(base_size = 20) +
-    labs(y = "        Number of pairs                     Bottleneck size") +
+    labs(y = " Number of pairs                   Bottleneck size") +
     theme(
       axis.title.x = element_blank(),
       axis.title.y = element_text(hjust = 0),

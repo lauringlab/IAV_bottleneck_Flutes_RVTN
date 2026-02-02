@@ -49,26 +49,16 @@ source("./01 - Functions/determineMaxLLBottleneck.R")
 clonal_mut_all <- read_csv("./04 - Output/Clonal_data/clonal_mut_all.csv")
 
 # 1. Create the probability matrix used within the bottleneck calculation ------
-# 
-# NOTE: For the published analysis, there were at maximum 5 clonal mutations per
-# pair. In this case, there is a loadable output file of the list_clonal()
-# function. If another data source is input, a new list_clonal() output file
-# will be generated each time. 
 
-if(max(clonal_mut_all$clonalMu) == 5) {
-  listClonal <- readRDS(
-    "./03 - Input/listClonal_5mutations.rds"
-  )
-} else {
-  listClonal <- list_clonal(
-    n_values = 1:8,
-    R0 = 11.1,
-    mu_values = seq(0.01, 5.01, by = 0.01),
-    maxMuGen = 50,
-    maxFS = 50,
-    clonal = max(clonal_mut_all$clonalMu)
-  )
-}
+
+listClonal <- list_clonal(
+  n_values = 1:8,
+  R0 = 11.1,
+  mu_values = seq(0.01, 4, by = 0.01),
+  maxMuGen = 50,
+  maxFS = 50,
+  clonal = 10
+)
 
 # 2. Determine the actual bottleneck size --------------------------------------
 bottlenecks <- list()
@@ -217,5 +207,5 @@ bottlenecks_by_factor_all <- bind_rows(bottlenecks)
 saveOutput <- TRUE
 
 if (saveOutput == TRUE) {
-  write.csv(bottlenecks_by_factor_all, file = './04 - Output/Clonal_data/clonal_mut_all_threshhold.csv')
+  write.csv(bottlenecks_by_factor_all, file = './04 - Output/Clonal_data/clonal_mut_all_new.csv')
 }
