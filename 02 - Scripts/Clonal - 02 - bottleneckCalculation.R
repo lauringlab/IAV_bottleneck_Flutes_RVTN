@@ -49,8 +49,6 @@ source("./01 - Functions/determineMaxLLBottleneck.R")
 clonal_mut_all <- read_csv("./04 - Output/Clonal_data/clonal_mut_all.csv")
 
 # 1. Create the probability matrix used within the bottleneck calculation ------
-
-
 listClonal <- list_clonal(
   n_values = 1:8,
   R0 = 11.1,
@@ -207,5 +205,5 @@ bottlenecks_by_factor_all <- bind_rows(bottlenecks)
 saveOutput <- TRUE
 
 if (saveOutput == TRUE) {
-  write.csv(bottlenecks_by_factor_all, file = './04 - Output/Clonal_data/clonal_mut_all_new.csv')
+  write.csv(bottlenecks_by_factor_all, file = './04 - Output/Clonal_data/clonal_mut_all_output.csv')
 }
