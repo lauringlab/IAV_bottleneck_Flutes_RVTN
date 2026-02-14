@@ -18,7 +18,7 @@ plotBottleneckSizeByMetadataBars_bothMethods <- function(isnvData, clonalData) {
     "V/U",
     "V/V",
     "U/U",
-    "V/U"
+    "U/V"
   )
   
   iSNV_method <- isnvData %>%
@@ -95,7 +95,15 @@ plotBottleneckSizeByMetadataBars_bothMethods <- function(isnvData, clonalData) {
     )) %>%
     dplyr::mutate(method = ifelse(method == "snv", "iSNV", "Clonal")) %>%
     group_by(method) %>%
-    dplyr::mutate(level = row_number())
+    arrange(metric) %>%
+    dplyr::mutate(level = row_number()) %>%
+    mutate(
+      estimate = ifelse(method == "Clonal" & level == 2, NA, estimate),
+      lower_CI = ifelse(method == "Clonal" &
+                          level == 2, NA, lower_CI),
+      upper_CI = ifelse(method == "Clonal" &
+                          level == 2, NA, upper_CI)
+    )
   
   p <- ggplot() +
     geom_col(
@@ -122,7 +130,6 @@ plotBottleneckSizeByMetadataBars_bothMethods <- function(isnvData, clonalData) {
       ),
       position = position_dodge(0.92),
       width = 0.8,
-      # alpha = 0.5,
       lwd = 1
     ) +
     geom_errorbar(
@@ -149,7 +156,7 @@ plotBottleneckSizeByMetadataBars_bothMethods <- function(isnvData, clonalData) {
       mapping = aes(
         x = level + 0.22,
         ymin = 1,
-        ymax = 6.7,
+        ymax = 6,
         width = 0.2
       )
     ) +
@@ -158,25 +165,25 @@ plotBottleneckSizeByMetadataBars_bothMethods <- function(isnvData, clonalData) {
       mapping = aes(
         xmin = level + 0.2,
         xmax = level + 0.4,
-        ymin = 4.5,
-        ymax = 6
+        ymin = 4,
+        ymax = 5.5
       ),
       fill = "white"
     ) +
     geom_segment(
       df2 %>% filter(method == "iSNV" & level == 2),
-      mapping = aes(x = level + 0.22, y = 4.5, yend = 6),
+      mapping = aes(x = level + 0.22, y = 4, yend = 5.5),
       lty = 3
     ) +
     geom_segment(df2,
-                 mapping = aes(x = 0.5, y = 6, yend = 7.5),
+                 mapping = aes(x = 0.5, y = 5.5, yend = 7),
                  lwd = 1.5) +
     geom_segment(df2,
-                 mapping = aes(x = 0.5, y = -3.5, yend = 4.5),
+                 mapping = aes(x = 0.5, y = -3.5, yend = 4),
                  lwd = 1.5) +
     geom_segment(
       df2,
-      mapping = aes(x = 0.5, y = 4.5, yend = 6),
+      mapping = aes(x = 0.5, y = 4, yend = 5.5),
       lty = 3,
       lwd = 1.5
     ) +
@@ -190,6 +197,11 @@ plotBottleneckSizeByMetadataBars_bothMethods <- function(isnvData, clonalData) {
       y = rep(5.5, 5),
       label = c("Season", "Subtype", "Age", "Sex", "Vaccination")
     ), size = 7) +
+    geom_text(aes(
+      x = 1.78,
+      y = 0.3,
+      label = "n.d."
+    ), size = 5) +
     scale_x_continuous(
       breaks = seq(1, 19, 1),
       labels = levels,
@@ -197,9 +209,9 @@ plotBottleneckSizeByMetadataBars_bothMethods <- function(isnvData, clonalData) {
       expand = c(0, 0)
     ) +
     scale_y_continuous(
-      breaks = c(-3.5, -3, -2.5, -2, -1.5, -1, -0.5, 1, 2, 3, 4, 6.7),
+      breaks = c(-3.5, -3, -2.5, -2, -1.5, -1, -0.5, 1, 2, 3, 4, 6),
       labels = c(70, 60, 50, 40, 30, 20, 10, 1, 2, 3, 4, 10),
-      limits = c(-3.5, 7.5),
+      limits = c(-3.5, 7),
       expand = c(0, 0)
     ) +
     scale_fill_manual(values = c("#89689d99", "#2c618499")) +
