@@ -8,6 +8,7 @@
 ## -----------------------------------------------------------------------------
 library(tidyverse)
 library(seqinr)
+library(phylotools)
 
 # 0. File paths ----------------------------------------------------------------
 source("./01 - Functions/createClonalDataByCoFactors.R")
