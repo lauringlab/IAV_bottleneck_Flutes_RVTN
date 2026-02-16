@@ -52,7 +52,7 @@ save <- TRUE
 if (save) {
   ggsave(
     plot = p,
-    filename = "./05 - Figures and Tables/Rendered/Fig S5.png",
+    filename = "./05 - Figures and Tables/Rendered/Fig S5.tif",
     width = 20,
     height = 15
   )
