@@ -33,21 +33,21 @@ plotDistributionsAndSignificance <- function(df5, df4, lambda_a_val = 1, lambda_
     scale_color_manual(
       values = c(a_col, b_col),
       labels = c(
-        paste("lambda = ", lambda_a_val, sep = ""),
-        paste("lambda = ", lambda_b_val, sep = "")
+        paste("lambda/Nb = ", lambda_a_val, sep = ""),
+        paste("lambda/Nb = ", lambda_b_val, sep = "")
       ),
       name = NULL
     ) +
     scale_fill_manual(
       values = c(a_col, b_col),
       labels = c(
-        paste("lambda = ", lambda_a_val, sep = ""),
-        paste("lambda = ", lambda_b_val, sep = "")
+        paste("lambda/Nb = ", lambda_a_val, sep = ""),
+        paste("lambda/Nb = ", lambda_b_val, sep = "")
       ),
       name = NULL
     ) +
     labs(x = "Bottleneck Size",
-         y = "Simulated Host Sets (5 pairs per set)") +
+         y = "Simulated subgroups (5 pairs per group)") +
     scale_y_continuous(expand = c(0.01, 0.01)) +
     scale_x_continuous(limits = c(1, 18), breaks = c(seq(1, 18, 2))) +
     theme_bw(base_size = 18) +
