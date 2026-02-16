@@ -1,7 +1,8 @@
 calculateBottleneckByMetadata <- function(pathToConfidenceInterval = "04 - Output/confidence_int.txt",
                                           pathToLogLikelihood = "04 - Output/logLikelihood.txt",
                                           pathToNumVars = "04 - Output/num_vars.txt",
-                                          pathToPairMeta = "03 - Input/pair_meta.txt") {
+                                          pathToPairMeta = "03 - Input/pair_meta.txt",
+                                          noFive = FALSE) {
   ### Get our data frames in order ###
   confidence_int <- read.table(pathToConfidenceInterval, header = TRUE)
   logLikelihood <- read.table(pathToLogLikelihood, header = TRUE)
@@ -57,6 +58,11 @@ calculateBottleneckByMetadata <- function(pathToConfidenceInterval = "04 - Outpu
   df2 <- df %>%
     dplyr::rename(pair_id = pair) %>%
     full_join(bottleneck_meta2)
+  
+  if(noFive == TRUE) {
+    df <- df %>% filter(pair != 20)
+    df2 <- df2 %>% filter(donor_id != 1809801502 & recipient_id != 1809802501)
+  }
   
   # Actual weighted average bottleneck calculation -----------------------------
   
