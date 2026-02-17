@@ -38,7 +38,23 @@ save <- TRUE
 if (save) {
   ggsave(
     plot = p,
-    filename = "./05 - Figures and Tables/Rendered/suppfig4.tif",
+    filename = "./05 - Figures and Tables/Rendered/tif/suppfig4.tif",
+    width = 13,
+    height = 8,
+    bg = "white"
+  )
+  
+  ggsave(
+    plot = p,
+    filename = "./05 - Figures and Tables/Rendered/eps/suppfig4.eps",
+    width = 13,
+    height = 8,
+    bg = "white"
+  )
+  
+  ggsave(
+    plot = p,
+    filename = "./05 - Figures and Tables/Rendered/png/suppfig4.png",
     width = 13,
     height = 8,
     bg = "white"

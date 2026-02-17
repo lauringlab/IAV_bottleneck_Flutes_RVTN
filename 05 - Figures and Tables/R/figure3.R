@@ -15,7 +15,7 @@ source("./01 - Functions/makePairTable.R")
 source("./01 - Functions/plotBottleneckSizeByMetadataBars_bothMethods.R")
 source("./01 - Functions/findCI.R")
 
-noFive <- TRUE
+noFive <- FALSE
 if (noFive) {
   pathToClonalOutput <- "./04 - Output/Clonal_data/clonal_mut_all_output_noFive.csv"
 } else {
@@ -35,8 +35,10 @@ clonal_pair <- read.table("./04 - Output/Clonal_data/clonal_dist_with_meta.txt",
                           header = TRUE)
 
 if (noFive == TRUE) {
-  isnv_pair <- isnv_pair %>% filter(donor_id != 1809801502 & recipient_id != 1809802501)
-  clonal_pair <- clonal_pair %>% filter(donor_id != 1809801502 & recipient_id != 1809802501)
+  isnv_pair <- isnv_pair %>% filter(donor_id != 1809801502 &
+                                      recipient_id != 1809802501)
+  clonal_pair <- clonal_pair %>% filter(donor_id != 1809801502 &
+                                          recipient_id != 1809802501)
 }
 
 isnvData <- calculateBottleneckByMetadata(
@@ -68,11 +70,26 @@ if (save) {
     )
   } else {
     ggsave(
-      filename = './05 - Figures and Tables/Rendered/fig3.tif',
+      filename = './05 - Figures and Tables/Rendered/tif/fig3.tif',
       plot = p,
       width = 15,
       height = 8
     )
+    
+    ggsave(
+      filename = './05 - Figures and Tables/Rendered/eps/fig3.eps',
+      plot = p,
+      width = 15,
+      height = 8
+    )
+    
+    ggsave(
+      filename = './05 - Figures and Tables/Rendered/png/fig3.png',
+      plot = p,
+      width = 15,
+      height = 8
+    )
+    
   }
 }
 

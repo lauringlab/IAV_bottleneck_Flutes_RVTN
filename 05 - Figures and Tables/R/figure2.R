@@ -27,7 +27,21 @@ save <- TRUE
 if (save) {
   ggsave(
     plot = fig2,
-    filename = "./05 - Figures and Tables/Rendered/fig2.tif",
+    filename = "./05 - Figures and Tables/Rendered/tif/fig2.tif",
+    width = 13,
+    height = 5
+  )
+  
+  ggsave(
+    plot = fig2,
+    filename = "./05 - Figures and Tables/Rendered/eps/fig2.eps",
+    width = 13,
+    height = 5
+  )
+  
+  ggsave(
+    plot = fig2,
+    filename = "./05 - Figures and Tables/Rendered/png/fig2.png",
     width = 13,
     height = 5
   )
