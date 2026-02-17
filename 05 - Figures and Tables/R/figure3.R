@@ -63,7 +63,7 @@ save <- TRUE
 if (save) {
   if (noFive) {
     ggsave(
-      filename = './05 - Figures and Tables/Rendered/fig3_noFive.png',
+      filename = './05 - Figures and Tables/Rendered/png/fig3_noFive.png',
       plot = p,
       width = 15,
       height = 8
