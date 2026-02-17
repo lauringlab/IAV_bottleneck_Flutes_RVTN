@@ -2,10 +2,12 @@
 .Rhistory
 .RData
 .Ruserdata
-/05 - Figures and Tables/Rendered
 04 - Output/Clonal_data/clonal_mut_all_new.csv
+/05 - Figures and Tables/Rendered/suppfig1
 /06 - Matlab
 /04 - Output/Simulated_data
 02 - Scripts/SimulatedData - 02 - bottleneckCalculation.r
 02 - Scripts/SimulatedData - 01 - dataSetup.r
 /04 - Output
+/05 - Figures and Tables/Rendered/eps
+/05 - Figures and Tables/Rendered/tif
