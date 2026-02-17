@@ -32,10 +32,10 @@ calculateBottleneckByMetadata <- function(pathToConfidenceInterval = "04 - Outpu
         donor_age >= 18 & recipient_age < 18 ~ "Adult-to-child"
       ),
       vax_cat = case_when(
-        donor_vax == 0 & recipient_vax == 0 ~ "Neither",
-        donor_vax == 0 &
+        (donor_vax == 0 | is.na(donor_vax)) & (recipient_vax == 0 | is.na(recipient_vax)) ~ "Neither",
+        (donor_vax == 0 | is.na(donor_vax)) &
           recipient_vax == 1 ~ "Recipient only",
-        donor_vax == 1 & recipient_vax == 0 ~ "Donor only",
+        donor_vax == 1 & (recipient_vax == 0 | is.na(donor_vax)) ~ "Donor only",
         donor_vax == 1 & recipient_vax == 1 ~ "Both"
       ),
       sex_cat = case_when(
